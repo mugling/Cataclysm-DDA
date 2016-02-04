@@ -4203,6 +4203,23 @@ bool item::gunmod_compatible( const item& mod, bool alert ) const
     return false;
 }
 
+std::vector<item *> item::gun_installed_mods( const std::string& location )
+{
+    std::vector<item *> res;
+    for( auto& mod : contents ) {
+        if( mod.is_gunmod() && ( location.empty() || location == mod.type->gunmod->location ) ) {
+            res.push_back( &mod );
+        }
+    }
+    return res;
+}
+
+std::vector<const item *> item::gun_installed_mods( const std::string& location ) const
+{
+    auto src = gun_installed_mods( location );
+    return std::vector<const item *>( src.begin(), src.end() );
+}
+
 const use_function *item::get_use( const std::string &use_name ) const
 {
     if( type != nullptr && type->get_use( use_name ) != nullptr ) {

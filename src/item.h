@@ -1126,6 +1126,12 @@ public:
         /** Checks if mod can be applied to this item considering any current state (jammed, loaded etc.) */
         bool gunmod_compatible( const item& mod, bool alert = true ) const;
 
+        /** Get installed gunmods (if any), optionally filtered by location
+         *  @param location if set return only mods installed there otherwise if empty return all mods
+         *  @return list of all/matching gunmods or an empty vector if item not a gun */
+        std::vector<item *> gun_installed_mods( const std::string& location = std::string() );
+        std::vector<const item *> gun_installed_mods( const std::string& location = std::string() ) const;
+
         /**
          * Burst size (see ranged.cpp), includes effects from installed gunmods.
          */

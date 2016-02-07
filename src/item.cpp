@@ -4151,6 +4151,9 @@ bool item::gunmod_compatible( const item& mod, bool alert ) const
     } else if( has_gunmod( mod.typeId() ) != -1 ) {
         msg = string_format( _( "Your %1$s already has a %2$s." ), tname().c_str(), mod.tname( 1 ).c_str() );
 
+    } else if( mod.type->gunmod->exclusive && !e->gun_installed_mods( mod.type->gunmod->location ).empty() ) {
+        msg = string_format( _( "That %1$s cannot be used at the same time as another %2$s mod" ), mod.tname().c_str(), _( mod.type->gunmod->location.c_str() ) );
+
     } else if( !type->gun->valid_mod_locations.count( mod.type->gunmod->location ) ) {
         msg = string_format( _( "Your %s doesn't have a slot for this mod." ), tname().c_str() );
 

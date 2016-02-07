@@ -352,6 +352,10 @@ struct islot_gunmod : common_firing_data {
      * How many moves does this gunmod take to install?
      */
     int install_time = 0;
+    /**
+     * Does this mod prevents use of other mods in the same slot?
+     */
+    bool exclusive;
 };
 
 struct islot_magazine {

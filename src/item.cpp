@@ -3533,12 +3533,7 @@ int item::reload_time( const player &u ) const
     if (is_gun()) {
         const auto reloading = type->gun.get();
         ret = reloading->reload_time;
-        if (charges == 0) {
-            int spare_mag = has_gunmod("spare_mag");
-            if (spare_mag != -1 && contents[spare_mag].charges > 0) {
-                ret -= int(double(ret) * 0.9);
-            }
-        }
+
         double skill_bonus = double(u.get_skill_level(reloading->skill_used)) * .075;
         if (skill_bonus > .75) {
             skill_bonus = .75;

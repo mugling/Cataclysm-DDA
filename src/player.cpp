@@ -45,6 +45,7 @@
 #include "catalua.h"
 #include "npc.h"
 #include "cata_utility.h"
+#include "uistate.h"
 
 #include <map>
 
@@ -10214,6 +10215,163 @@ int player::item_reload_cost( const item& it, const item& ammo ) const
     }
 
     return std::max( mv, 0 );
+}
+
+item_location player::pick_reload_ammo( const item& it )
+{
+    using reloadable = struct {
+        const item *target;
+        item_location ammo;
+        int qty;
+        int moves;
+    };
+    std::vector<reloadable> ammo_list;
+
+    auto opts = it.gunmods();
+    opts.push_back( &it );
+    for( auto e : opts ) {
+        for( item_location& ammo : find_ammo( *e ) ) {
+            if( e->can_reload( ammo->is_ammo_container() ? ammo->contents[ 0 ].typeId() : ammo->typeId() ) ||
+                e->has_flag( "RELOAD_AND_SHOOT" ) ) {
+
+                int qty = std::max( int( !e->has_flag( "RELOAD_ONE" ) ? e->ammo_capacity() - e->ammo_remaining() : 1 ), 1 );
+                int mv = ammo.obtain_cost( *this, qty ) + item_reload_cost( *e, *ammo );
+
+                ammo_list.emplace_back( reloadable { e, std::move( ammo ), qty, mv } );
+            }
+        }
+    }
+
+    if( ammo_list.empty() ) {
+        add_msg_if_player( m_info, _( "Out of %s!" ), it.is_gun() ? _("ammo") : ammo_name( it.ammo_type() ).c_str() );
+        return item_location();
+    }
+
+    std::sort( ammo_list.begin(), ammo_list.end(), []( const reloadable& lhs, const reloadable& rhs ) {
+        return rhs.ammo->ammo_remaining() < lhs.ammo->ammo_remaining();
+    } );
+
+    if( ammo_list.size() == 1 ) {
+        // Suppress display of reload prompt when...
+        if( !it.is_gun() ) {
+            return std::move( ammo_list[ 0 ].ammo ); // reloading tools
+
+        } else if( it.magazine_integral() && it.ammo_remaining() > 0 ) {
+            return std::move( ammo_list[ 0 ].ammo ); // adding to partially filled integral magazines
+
+        } else if( it.has_flag( "RELOAD_AND_SHOOT" ) && has_item( *ammo_list[ 0 ].ammo ) ) {
+            return std::move( ammo_list[ 0 ].ammo ); // using bows etc and ammo is already in player possession
+        }
+    }
+
+    uimenu menu;
+    menu.text = string_format( _("Reload %s" ), it.tname().c_str() );
+    menu.return_invalid = true;
+
+    // Construct item names
+    std::vector<std::string> names;
+    std::transform( ammo_list.begin(), ammo_list.end(), std::back_inserter( names ), [this]( const reloadable& e ) {
+        if( e.ammo->is_magazine() && e.ammo->ammo_data() ) {
+            //~ magazine with ammo (count)
+            return string_format( _( "%s with %s (%d)" ), e.ammo->type_name().c_str(),
+                                  e.ammo->ammo_data()->nname( e.ammo->ammo_remaining() ).c_str(), e.ammo->ammo_remaining() );
+
+        } else if( e.ammo->is_ammo_container() && is_worn( *e.ammo ) ) {
+            // worn ammo containers should be named by their contents with their location also updated below
+            return e.ammo->contents[ 0 ].display_name();
+
+        } else {
+            return e.ammo->display_name();
+        }
+    } );
+
+    // Get location descriptions
+    std::vector<std::string> where;
+    std::transform( ammo_list.begin(), ammo_list.end(), std::back_inserter( where ), [this]( const reloadable& e ) {
+        if( e.ammo->is_ammo_container() && is_worn( *e.ammo ) ) {
+            return e.ammo->type_name();
+        }
+        return e.ammo.describe( &g->u );
+    } );
+
+    // Pads elements to match longest member and return length
+    auto pad = []( std::vector<std::string>& vec, int n, int t ) -> int {
+        for( const auto& e : vec ) {
+            n = std::max( n, utf8_width( e, true ) + t );
+        };
+        for( auto& e : vec ) {
+            e += std::string( n - utf8_width( e, true ), ' ' );
+        }
+        return n;
+    };
+
+    // Pad the first column including 4 trailing spaces
+    int w = pad( names, utf8_width( menu.text, true ), 6 );
+    menu.text.insert( 0, 2, ' ' ); // add space for UI hotkeys
+    menu.text += std::string( w + 2 - utf8_width( menu.text, true ), ' ' );
+    menu.w_width += w + 2;
+
+    // Pad the location similarly (excludes leading "| " and trailing " ")
+    w = pad( where, utf8_width( _( "| Location " ) ) - 3, 6 );
+    menu.text += _("| Location " );
+    menu.text += std::string( w + 3 - utf8_width( _( "| Location " ) ), ' ' );
+    menu.w_width += w + 3;
+
+    menu.text += _( "| Moves   " );
+    menu.w_width += 10;
+
+    // We only show ammo statistics for guns and magazines
+    if( it.is_gun() || it.is_magazine() ) {
+        menu.text += _( "| Damage  | Pierce  " );
+        menu.w_width += 20;
+    }
+
+    menu.w_width += 6; // include space for borders
+
+    // center dialog
+    menu.w_x = std::max( ( TERMX / 2 ) - int( menu.w_width / 2 ) , 0 );
+    menu.w_y = std::max( ( TERMY / 2 ) - int( (ammo_list.size() + 3 ) / 2 ) , 0 );
+
+    itype_id last = uistate.lastreload[ it.ammo_type() ];
+
+    for( auto i = 0; i != (int) ammo_list.size(); ++i ) {
+        const item& ammo = ammo_list[ i ].ammo->is_ammo_container() ? ammo_list[ i ].ammo->contents[ 0 ] : *ammo_list[ i ].ammo;
+
+        std::string row = string_format( "%s| %s | %-7d ", names[ i ].c_str(), where[ i ].c_str(), ammo_list[ i ].moves );
+
+        if( it.is_gun() || it.is_magazine() ) {
+            const itype *curammo = ammo.ammo_data(); // nullptr for empty magazines
+            if( curammo ) {
+                row += string_format( "| %-7d | %-7d", curammo->ammo->damage, curammo->ammo->pierce );
+            } else {
+                row += "|         |         ";
+            }
+        }
+
+        char hotkey = -1;
+        if( has_item( ammo ) && ( ammo.invlet || ammo_list[ i ].ammo->invlet ) ) {
+            // if ammo in player possession and either it or any container has a valid invlet use this
+            hotkey = ammo.invlet ? ammo.invlet : ammo_list[ i ].ammo->invlet;
+
+        } else if( last == ammo.typeId() ) {
+            // if this is the first occurrence of the most recently used type of ammo and the hotkey
+            // was not already set above then set it to the keypress that opened this prompt
+            hotkey = inp_mngr.get_previously_pressed_key();
+            last = std::string();
+        }
+
+        menu.addentry( i, true, hotkey, row );
+    }
+
+    menu.query();
+    if( menu.ret < 0 || menu.ret >= ( int ) ammo_list.size() ) {
+        add_msg_if_player( m_info, _( "Never mind." ) );
+        return item_location();
+    }
+
+    item_location sel = std::move( ammo_list[ menu.ret ].ammo );
+    uistate.lastreload[ it.ammo_type() ] = sel->is_ammo_container() ? sel->contents[ 0 ].typeId() : sel->typeId();
+    return sel;
 }
 
 bool player::wear(int inventory_position, bool interactive)

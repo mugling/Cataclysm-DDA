@@ -228,12 +228,6 @@ class item : public JsonSerializer, public JsonDeserializer, public visitable<it
      */
     bool can_reload( const itype_id& ammo = std::string() ) const;
 
-    /**
-     * Select suitable ammo with which to reload the item
-     * @param u player inventory to search for suitable ammo.
-     */
-    item_location pick_reload_ammo( player &u ) const;
-
     /** Reload item using ammo from inventory position returning true if sucessful */
     bool reload( player &u, int pos );
 

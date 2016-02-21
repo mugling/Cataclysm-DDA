@@ -10201,12 +10201,12 @@ int player::item_reload_cost( const item& it, const item& ammo ) const
     skill_id sk = it.is_gun() ? it.type->gun->skill_used : skill_gun;
     int cost = it.is_gun() ? it.type->gun->reload_time : it.type->magazine->reload_time;
 
-    mv += cost / ( 1 + std::min( double( get_skill_level( sk ) ) * 0.075, 0.75 ) );
-
     if( it.is_magazine() )  {
         // for magazines reload time is per round
-        mv *= std::min( ammo.charges, it.ammo_capacity() - it.ammo_remaining() );
+        cost *= std::min( ammo.charges, it.ammo_capacity() - it.ammo_remaining() );
     }
+
+    mv += cost / ( 1 + std::min( double( get_skill_level( sk ) ) * 0.075, 0.75 ) );
 
     if( it.has_flag( "STR_RELOAD" ) ) {
         ///\EFFECT_STR reduces reload time of some weapons

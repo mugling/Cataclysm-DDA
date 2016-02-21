@@ -11016,13 +11016,13 @@ void game::plfire( bool burst, const tripoint &default_target )
         }
 
         if( gun.has_flag("RELOAD_AND_SHOOT") && gun.ammo_remaining() == 0 ) {
-            item_location ammo = u.pick_reload_ammo( gun );
-            if( !ammo ) {
+            player::reload_choice opt = u.pick_reload_ammo( gun );
+            if( opt.target != &gun || !opt.ammo ) {
                 return; // menu cancelled
             }
 
-            reload_time += u.item_reload_cost( gun, *ammo );
-            if( !gun.reload( u, std::move( ammo ) ) ) {
+            reload_time += u.item_reload_cost( gun, *opt.ammo );
+            if( !gun.reload( u, std::move( opt.ammo ) ) ) {
                 return; // unable to reload
             }
 
@@ -11500,35 +11500,13 @@ void game::reload( int pos )
             break;
     }
 
-    auto loc = u.pick_reload_ammo( *it );
-    if( loc ) {
-        const item& ammo = loc->is_ammo_container() ? loc->contents[0] : *loc;
-
-        item *target = nullptr;
-        if( it->active_gunmod() && it->active_gunmod()->can_reload( ammo.typeId() ) ) {
-            target = it->active_gunmod(); // prefer reloading active gunmod
-
-        } else if( it->can_reload( ammo.typeId() ) ) {
-            target = it; // otherwise reload item itself
-
-        } else {
-            for( const auto mod : it->gunmods() ) {
-                if( mod->can_reload( ammo.typeId() ) ) {
-                    target = mod; // finally try to reload any other auxiliary gunmod
-                    break;
-                }
-            }
-        }
-        if( !target ) {
-            debugmsg( "Unable to find suitable reload target" );
-            return; // not expected when player::rate_action_reload() == true
-        }
-
-        int qty = std::max( !target->has_flag( "RELOAD_ONE" ) ? target->ammo_capacity() - target->ammo_remaining() : 1, 1L );
+    player::reload_choice opt = u.pick_reload_ammo( *it );
+    if( !opt.target || !opt.ammo ) {
+        const item& ammo = opt.ammo->is_ammo_container() ? opt.ammo->contents[0] : *opt.ammo;
 
         std::stringstream ss;
         ss << pos;
-        u.assign_activity( ACT_RELOAD, u.item_reload_cost( *target, ammo ), -1, loc.obtain( u, qty ), ss.str() );
+        u.assign_activity( ACT_RELOAD, u.item_reload_cost( *opt.target, ammo ), -1, opt.ammo.obtain( u, opt.qty ), ss.str() );
         u.inv.restack( &u );
     }
 

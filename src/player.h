@@ -773,8 +773,15 @@ class player : public Character, public JsonSerializer, public JsonDeserializer
         /** Calculate (but do not deduct) the number of moves required when reloading an item */
         int item_reload_cost( const item& it, const item& ammo ) const;
 
+        using reload_choice = struct {
+            const item *target;
+            item_location ammo;
+            int qty;
+            int moves;
+        };
+
         /** Select suitable ammo with which to reload the item */
-        item_location pick_reload_ammo( const item& it );
+        reload_choice pick_reload_ammo( const item& it );
 
         /** Wear item; returns false on fail. If interactive is false, don't alert the player or drain moves on completion. */
         bool wear(int pos, bool interactive = true);

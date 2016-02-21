@@ -10217,15 +10217,9 @@ int player::item_reload_cost( const item& it, const item& ammo ) const
     return std::max( mv, 0 );
 }
 
-item_location player::pick_reload_ammo( const item& it )
+player::reload_choice player::pick_reload_ammo( const item& it )
 {
-    using reloadable = struct {
-        const item *target;
-        item_location ammo;
-        int qty;
-        int moves;
-    };
-    std::vector<reloadable> ammo_list;
+    std::vector<reload_choice> ammo_list;
 
     auto opts = it.gunmods();
     opts.push_back( &it );
@@ -10237,30 +10231,30 @@ item_location player::pick_reload_ammo( const item& it )
                 int qty = std::max( int( !e->has_flag( "RELOAD_ONE" ) ? e->ammo_capacity() - e->ammo_remaining() : 1 ), 1 );
                 int mv = ammo.obtain_cost( *this, qty ) + item_reload_cost( *e, *ammo );
 
-                ammo_list.emplace_back( reloadable { e, std::move( ammo ), qty, mv } );
+                ammo_list.push_back( reload_choice { e, std::move( ammo ), qty, mv } );
             }
         }
     }
 
     if( ammo_list.empty() ) {
         add_msg_if_player( m_info, _( "Out of %s!" ), it.is_gun() ? _("ammo") : ammo_name( it.ammo_type() ).c_str() );
-        return item_location();
+        return reload_choice { nullptr, item_location(), 0, 0 };
     }
 
-    std::sort( ammo_list.begin(), ammo_list.end(), []( const reloadable& lhs, const reloadable& rhs ) {
+    std::sort( ammo_list.begin(), ammo_list.end(), []( const reload_choice& lhs, const reload_choice& rhs ) {
         return rhs.ammo->ammo_remaining() < lhs.ammo->ammo_remaining();
     } );
 
     if( ammo_list.size() == 1 ) {
         // Suppress display of reload prompt when...
         if( !it.is_gun() ) {
-            return std::move( ammo_list[ 0 ].ammo ); // reloading tools
+            return std::move( ammo_list[ 0 ] ); // reloading tools
 
         } else if( it.magazine_integral() && it.ammo_remaining() > 0 ) {
-            return std::move( ammo_list[ 0 ].ammo ); // adding to partially filled integral magazines
+            return std::move( ammo_list[ 0 ] ); // adding to partially filled integral magazines
 
         } else if( it.has_flag( "RELOAD_AND_SHOOT" ) && has_item( *ammo_list[ 0 ].ammo ) ) {
-            return std::move( ammo_list[ 0 ].ammo ); // using bows etc and ammo is already in player possession
+            return std::move( ammo_list[ 0 ] ); // using bows etc and ammo is already in player possession
         }
     }
 
@@ -10270,7 +10264,7 @@ item_location player::pick_reload_ammo( const item& it )
 
     // Construct item names
     std::vector<std::string> names;
-    std::transform( ammo_list.begin(), ammo_list.end(), std::back_inserter( names ), [this]( const reloadable& e ) {
+    std::transform( ammo_list.begin(), ammo_list.end(), std::back_inserter( names ), [this]( const reload_choice& e ) {
         if( e.ammo->is_magazine() && e.ammo->ammo_data() ) {
             //~ magazine with ammo (count)
             return string_format( _( "%s with %s (%d)" ), e.ammo->type_name().c_str(),
@@ -10287,7 +10281,7 @@ item_location player::pick_reload_ammo( const item& it )
 
     // Get location descriptions
     std::vector<std::string> where;
-    std::transform( ammo_list.begin(), ammo_list.end(), std::back_inserter( where ), [this]( const reloadable& e ) {
+    std::transform( ammo_list.begin(), ammo_list.end(), std::back_inserter( where ), [this]( const reload_choice& e ) {
         if( e.ammo->is_ammo_container() && is_worn( *e.ammo ) ) {
             return e.ammo->type_name();
         }
@@ -10366,12 +10360,12 @@ item_location player::pick_reload_ammo( const item& it )
     menu.query();
     if( menu.ret < 0 || menu.ret >= ( int ) ammo_list.size() ) {
         add_msg_if_player( m_info, _( "Never mind." ) );
-        return item_location();
+        return reload_choice { nullptr, item_location(), 0, 0 };
     }
 
-    item_location sel = std::move( ammo_list[ menu.ret ].ammo );
+    const item_location& sel = ammo_list[ menu.ret ].ammo;
     uistate.lastreload[ it.ammo_type() ] = sel->is_ammo_container() ? sel->contents[ 0 ].typeId() : sel->typeId();
-    return sel;
+    return std::move( ammo_list[ menu.ret ] );
 }
 
 bool player::wear(int inventory_position, bool interactive)

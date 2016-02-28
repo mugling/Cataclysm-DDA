@@ -839,7 +839,7 @@ void Item_factory::load_tool_armor(JsonObject &jo)
     tool_template->def_charges = jo.get_int("initial_charges");
     tool_template->charges_per_use = jo.get_int("charges_per_use");
     tool_template->turns_per_charge = jo.get_int("turns_per_charge");
-    tool_template->revert_to = jo.get_string("revert_to");
+    tool_template->revert_to = jo.get_string("revert_to", tool_template->revert_to );
 
     load_slot( tool_template->armor , jo );
 

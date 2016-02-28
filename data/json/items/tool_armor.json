@@ -24,7 +24,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You turn the helmet on.",
@@ -92,7 +91,6 @@
         "coverage" : 15,
         "symbol" : "[",
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": "PORTABLE_GAME",
         "max_charges": 60,
         "initial_charges": 60,
@@ -112,7 +110,6 @@
         "charges_per_use": 0,
         "turns_per_charge": 0,
         "ammo": "NULL",
-        "revert_to": "null",
         "use_action": {
             "type": "consume_drug",
             "activation_message": "You tip your fedora."
@@ -149,7 +146,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -213,7 +209,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -278,7 +273,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -342,7 +336,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -409,7 +402,6 @@
         "charges_per_use": 0,
         "turns_per_charge": 0,
         "ammo": "NULL",
-        "revert_to": "null",
         "use_action": {
             "type": "extended_firestarter",
             "need_sunlight": true
@@ -438,7 +430,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You turn the head torch on.",
@@ -502,7 +493,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You turn the survivor head torch on.",
@@ -566,7 +556,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -636,7 +625,6 @@
         "charges_per_use": 0,
         "turns_per_charge": 0,
         "ammo": "plutonium",
-        "revert_to": "null",
         "use_action": "RM13ARMOR_OFF",
         "covers" : ["HEAD", "MOUTH", "EYES", "TORSO", "ARMS", "HANDS", "LEGS", "FEET"],
         "storage" : 32,
@@ -696,7 +684,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "rebreather_filter",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -764,7 +751,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "rebreather_filter",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -833,7 +819,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -902,7 +887,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -969,7 +953,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "ampoule",
-        "revert_to": "null",
         "use_action": "JET_INJECTOR",
         "encumbrance" : 0,
         "coverage" : 0,
@@ -994,7 +977,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "stimpack_ammo",
-        "revert_to": "null",
         "use_action": "STIMPACK",
         "encumbrance" : 0,
         "coverage" : 0,
@@ -1019,7 +1001,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "rebreather_filter",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -1087,7 +1068,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "rebreather_filter",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -1153,7 +1133,6 @@
         "turns_per_charge": 0,
         "ammo": "NULL",
         "use_action": "UNPACK_ITEM",
-        "revert_to": "null",
         "encumbrance" : 0,
         "coverage" : 0,
         "material_thickness" : 0
@@ -1202,7 +1181,6 @@
         "turns_per_charge": 0,
         "ammo": "NULL",
         "use_action": "UNPACK_ITEM",
-        "revert_to": "null",
         "encumbrance" : 0,
         "coverage" : 0,
         "material_thickness" : 0
@@ -1253,7 +1231,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": "RADGLOVE",
         "encumbrance" : 0,
         "coverage" : 0,
@@ -1306,7 +1283,6 @@
         "charges_per_use": 0,
         "turns_per_charge": 0,
         "ammo": "NULL",
-        "revert_to": "null",
         "use_action": {
             "type": "picklock",
             "pick_quality": 3
@@ -1333,7 +1309,6 @@
     "charges_per_use": 0,
     "turns_per_charge": 0,
     "ammo": "NULL",
-    "revert_to": "null",
     "use_action": "TOWEL",
     "warmth" : 10,
     "encumbrance" : 0,
@@ -1404,7 +1379,6 @@
         "charges_per_use": 0,
         "turns_per_charge": 0,
         "ammo": "NULL",
-        "revert_to": "null",
         "use_action": {
             "type": "consume_drug",
             "activation_message": "You tip your fedora."
@@ -1446,7 +1420,6 @@
             "msg": "You loosen your %s.",
             "target": "patchwork_scarf_loose"
         },
-        "revert_to": "null",
         "covers" : ["MOUTH"],
         "flags" : ["OUTER"],
         "warmth" : 20,
@@ -1512,7 +1485,6 @@
             "msg": "You loosen your %s.",
             "target": "long_patchwork_scarf_loose"
         },
-        "revert_to": "null",
         "covers" : ["MOUTH"],
         "flags" : ["OVERSIZE", "POCKETS", "OUTER"],
         "warmth" : 20,
@@ -1578,7 +1550,6 @@
             "msg": "You loosen your %s.",
             "target": "knit_scarf_loose"
         },
-        "revert_to": "null",
         "covers" : ["MOUTH"],
         "flags" : ["OUTER"],
         "warmth" : 30,
@@ -1644,7 +1615,6 @@
             "msg": "You loosen your %s.",
             "target": "long_knit_scarf_loose"
         },
-        "revert_to": "null",
         "covers" : ["MOUTH"],
         "flags" : ["OVERSIZE", "POCKETS", "OUTER"],
         "warmth" : 30,
@@ -1710,7 +1680,6 @@
             "msg": "You loosen your %s.",
             "target": "scarf_loose"
         },
-        "revert_to": "null",
         "covers" : ["MOUTH"],
         "flags" : ["OUTER"],
         "warmth" : 50,
@@ -1776,7 +1745,6 @@
             "msg": "You loosen your %s.",
             "target": "scarf_long_loose"
         },
-        "revert_to": "null",
         "covers" : ["MOUTH"],
         "flags" : ["OVERSIZE", "POCKETS", "OUTER"],
         "warmth" : 50,
@@ -1842,7 +1810,6 @@
             "msg": "You loosen your %s.",
             "target": "scarf_fur_loose"
         },
-        "revert_to": "null",
         "covers" : ["MOUTH"],
         "flags" : ["OUTER"],
         "warmth" : 70,
@@ -1908,7 +1875,6 @@
             "msg": "You loosen your %s.",
             "target": "scarf_fur_long_loose"
         },
-        "revert_to": "null",
         "covers" : ["MOUTH"],
         "flags" : ["OVERSIZE", "POCKETS", "OUTER"],
         "warmth" : 70,
@@ -1969,7 +1935,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You activate your %s.",
@@ -2033,7 +1998,6 @@
             "msg": "You adjust your ski mask for less warmth.",
             "target": "mask_ski_loose"
         },
-        "revert_to": "null",
         "symbol" : "[",
         "description" : "A warm wool mask that protects the head and face from cold.  It has a full face opening that can be adjusted to set how much is exposed.",
         "price" : 1800,
@@ -2095,7 +2059,6 @@
         "coverage" : 1,
         "symbol" : "[",
         "ammo": "NULL",
-        "revert_to": "null",
         "use_action": {
             "type": "manualnoise",
             "no_charges_message": "Seeing this is an error.",
@@ -2135,7 +2098,6 @@
                 "You whistle on your harmonica."
             ]
         },
-        "revert_to": "null",
         "symbol" : "-",
         "description" : "A harmonica with a holder, so that you can play it without a free hand.",
         "price" : 1000,
@@ -2175,7 +2137,6 @@
                 "You play a slow blues-y tune on your guitar."
             ]
         },
-        "revert_to": "null",
         "symbol" : "-",
         "description" : "A simple wooden acoustic guitar with a strap so you can wear it around, even when not playing.",
         "price" : 1000,
@@ -2216,7 +2177,6 @@
                 "You strike a lively quick step march on your pipes."
             ]
         },
-        "revert_to": "null",
         "symbol" : "-",
         "description" : "A traditional musical instrument using enclosed reeds fed from a reservoir of air contained within a leather bag.  It has a strap so you can wear it around, even when not playing.",
         "price" : 10000,
@@ -2256,7 +2216,6 @@
                 "You play a marching tune on your tuba."
             ]
         },
-        "revert_to": "null",
         "symbol" : "&",
         "//~" : "ol' is an informal short-form for old, and here is part of big-ol as large-and-cumbersome.",
         "description" : "A big ol' tuba.  Much easier to play when wearing.",
@@ -2296,7 +2255,6 @@
                 "You play a quick, energetic ditty on your sax."
             ]
         },
-        "revert_to": "null",
         "symbol" : "{",
         "description" : "A brass-plated alto saxophone with a neck strap, so you can wear it while playing.",
         "price" : 7500,
@@ -2326,7 +2284,6 @@
         "charges_per_use": 1,
         "turns_per_charge": 0,
         "ammo": "battery",
-        "revert_to": "null",
         "use_action": {
             "type": "transform",
             "msg": "You turn the earmuffs on.",

@@ -1413,7 +1413,6 @@
         "charges_per_use": 0,
         "turns_per_charge": 0,
         "ammo": "money",
-        "revert_to": "null"
     },
     {
         "id": "gasdiscount_silver",
@@ -1434,7 +1433,6 @@
         "charges_per_use": 0,
         "turns_per_charge": 0,
         "ammo": "NULL",
-        "revert_to": "null"
     },
     {
         "id": "gasdiscount_gold",
@@ -1455,7 +1453,6 @@
         "charges_per_use": 0,
         "turns_per_charge": 0,
         "ammo": "NULL",
-        "revert_to": "null"
     },
     {
         "id": "gasdiscount_platinum",
@@ -1476,7 +1473,6 @@
         "charges_per_use": 0,
         "turns_per_charge": 0,
         "ammo": "NULL",
-        "revert_to": "null"
     },
     {
         "type":"GENERIC",

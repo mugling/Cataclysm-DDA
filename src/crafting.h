@@ -63,6 +63,9 @@ struct recipe {
         int batch_rsize; // minimum batch size to needed to reach batch_rscale
         int result_mult = 1; // used by certain batch recipes that create more than one stack of the result
 
+        /** maximum batch size to offer (capped also by available requirements) defaulting to unlimited */
+        int batch_max = -1;
+
         // only used during loading json data: book_id is the id of an book item, other stuff is copied
         // into @ref islot_book::recipes.
         struct bookdata_t {

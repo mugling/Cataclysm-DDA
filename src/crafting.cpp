@@ -142,6 +142,8 @@ void load_recipe(JsonObject &jsobj)
     rec->result_mult = result_mult;
     rec->flags = jsobj.get_tags( "flags" );
 
+    jsobj.read( "batch_max", rec->batch_max );
+
     rec->requirements.load(jsobj);
 
     jsarr = jsobj.get_array("book_learn");
@@ -465,12 +467,17 @@ void batch_recipes(const inventory &crafting_inv,
                    std::vector<const recipe *> &current,
                    std::vector<bool> &available, const recipe *rec)
 {
-    current.clear();
-    available.clear();
+    int n;
+    for( n = 1; rec->can_make_with_inventory( crafting_inv, n + 1 ); ++n );
+    if( rec->batch_max > 0 ) {
+        n = std::min( n, rec->batch_max );
+    }
 
-    for (int i = 1; i <= 20; i++) {
-        current.push_back(rec);
-        available.push_back(rec->can_make_with_inventory(crafting_inv, i));
+    current.assign( n, rec );
+    available.assign( n, true );
+
+    if( !rec->can_make_with_inventory( crafting_inv, 1 ) ) {
+        available[0] = false;
     }
 }
 

@@ -66,6 +66,9 @@ struct recipe {
         /** maximum batch size to offer (capped also by available requirements) defaulting to unlimited */
         int batch_max = -1;
 
+        /** if specified set the ammo type of each batch to this and set charges according to the batch size */
+        itype_id ammo = "null";
+
         // only used during loading json data: book_id is the id of an book item, other stuff is copied
         // into @ref islot_book::recipes.
         struct bookdata_t {

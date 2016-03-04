@@ -144,6 +144,8 @@ void load_recipe(JsonObject &jsobj)
 
     jsobj.read( "batch_max", rec->batch_max );
 
+    jsobj.read( "ammo", rec->ammo );
+
     rec->requirements.load(jsobj);
 
     jsarr = jsobj.get_array("book_learn");
@@ -578,25 +580,31 @@ item recipe::create_result() const {
     if( newit.has_flag( "VARSIZE" ) ) {
         newit.item_tags.insert( "FIT" );
     }
+
     return newit;
 }
 
 std::vector<item> recipe::create_results(int batch) const
 {
-    std::vector<item> items;
+    item out = create_result();
 
-    if( !item::count_by_charges( result ) ) {
-        for (int i = 0; i < batch; i++) {
-            item newit = create_result();
-            items.push_back(newit);
+    if( ammo != "null" ) {
+        if( out.is_ammo() ) {
+            // if result is ammo set the charges directly
+            out.charges = batch;
+            return { out };
+        } else {
+            return { out.ammo_set( ammo, batch ) };
         }
-    } else {
-        item newit = create_result();
-        newit.charges *= batch;
-        items.push_back(newit);
     }
 
-    return items;
+    else if( item::count_by_charges( result ) ) {
+        out.charges *= batch;
+        return { out };
+
+    } else {
+        return std::vector<item>( batch, out );
+    }
 }
 
 std::vector<item> recipe::create_byproducts(int batch) const

@@ -35,12 +35,6 @@ static const std::string fake_recipe_book = "book";
 
 void remove_from_component_lookup(recipe* r);
 
-recipe::recipe() :
-    result("null"), contained(false),skill_used( NULL_ID ), reversible(false),
-    autolearn(false), learn_by_disassembly(-1), result_mult(1)
-{
-}
-
 // Check that the given recipe ident (rec_name) is unique, throw if not,
 // If the recipe should override an existing one, the function removes the existing
 // recipe.
@@ -69,7 +63,6 @@ void load_recipe(JsonObject &jsobj)
     // required
     std::string result = jsobj.get_string("result");
     std::string category = jsobj.get_string("category");
-    bool autolearn = jsobj.get_bool("autolearn");
     int time = jsobj.get_int("time");
     int difficulty = jsobj.get_int( "difficulty" );
 
@@ -142,7 +135,7 @@ void load_recipe(JsonObject &jsobj)
         rec->required_skills[skill_id( elem.first )] = elem.second;
     }
     rec->reversible = reversible;
-    rec->autolearn = autolearn;
+    rec->autolearn = jsobj.get_bool( "autolearn", true );
     rec->learn_by_disassembly = learn_by_disassembly;
     rec->batch_rscale = batch_rscale;
     rec->batch_rsize = batch_rsize;

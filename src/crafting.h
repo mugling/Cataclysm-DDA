@@ -49,19 +49,19 @@ struct recipe {
         requirement_data requirements;
         std::vector<byproduct> byproducts;
         std::string cat;
-        bool contained; // Does the item spawn contained?
+        bool contained = false; // Does the item spawn contained?
         std::string subcat;
-        skill_id skill_used;
+        skill_id skill_used = NULL_ID;
         std::map<skill_id, int> required_skills;
-        bool reversible; // can the item be disassembled?
-        bool autolearn; // do we learn it just by leveling skills?
-        int learn_by_disassembly; // what level (if any) do we learn it by disassembly?
+        bool reversible = false; // can the item be disassembled?
+        bool autolearn = false; // do we learn it just by leveling skills?
+        int learn_by_disassembly = -1; // what level (if any) do we learn it by disassembly?
 
         // maximum achievable time reduction, as percentage of the original time.
         // if zero then the recipe has no batch crafting time reduction.
         double batch_rscale;
         int batch_rsize; // minimum batch size to needed to reach batch_rscale
-        int result_mult; // used by certain batch recipes that create more than one stack of the result
+        int result_mult = 1; // used by certain batch recipes that create more than one stack of the result
 
         // only used during loading json data: book_id is the id of an book item, other stuff is copied
         // into @ref islot_book::recipes.
@@ -79,8 +79,6 @@ struct recipe {
         //Create a string list to describe the skill requirements fir this recipe
         // Format: skill_name(amount), skill_name(amount)
         std::string required_skills_string() const;
-
-        recipe();
 
         // Create an item instance as if the recipe was just finished,
         // Contain charges multiplier

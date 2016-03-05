@@ -190,6 +190,15 @@ void finalize_recipes()
             t->book->recipes.insert( rwd );
         }
         r->booksets.clear();
+
+        if( r->batch_max <= 0 ) {
+            itype *rtype = item::find_type( r->result );
+            if( rtype->ammo ) {
+                r->batch_max = rtype->stack_size;
+            } else if( rtype->magazine ) {
+                r->batch_max = rtype->magazine->capacity;
+            }
+        }
     }
 }
 

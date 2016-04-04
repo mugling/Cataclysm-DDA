@@ -4460,9 +4460,12 @@ item::reload_option item::pick_reload_ammo( player &u ) const
 
         bool key( int ch, int idx, uimenu * menu ) {
             auto& sel = static_cast<std::vector<reload_option> *>( myptr )->operator[]( idx );
+
+            // dont allow changing of quantity when reloading using a magazine
             if( !sel.ammo->is_ammo() ) {
-                return true;
+                return ( ch == KEY_LEFT || ch == KEY_RIGHT ) ? true : false;
             }
+
             switch( ch ) {
                 case KEY_LEFT:
                     sel.qty = std::max( --sel.qty, 1L );
@@ -4476,7 +4479,7 @@ item::reload_option item::pick_reload_ammo( player &u ) const
                     menu->entries[ idx ].txt = draw_row( idx );
                     return true;
             }
-            return true;
+            return false;
         }
     } cb;
     cb.setptr( &ammo_list );

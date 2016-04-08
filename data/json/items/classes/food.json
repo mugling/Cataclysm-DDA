@@ -1,0 +1,14 @@
+[
+  {
+    "abstract": "fruit",
+    "type": "COMESTIBLE",
+    "comestible_type": "FOOD",
+    "name": "fruit",
+    "material": "fruit",
+    "symbol": "%",
+    "color": "yellow",
+    "spoils_in": 120,
+    "healthy": 2,
+    "deficient": [ "vitD", "calcium", "iron" ]
+  }
+]

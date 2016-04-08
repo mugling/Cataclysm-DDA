@@ -1,0 +1,9 @@
+[
+  {
+	  "id": "food_fruit",
+	  "type": "item_group",
+    "comment" : "Fresh fruit excluding canned, irradiated or otherwise preserved items",
+    "items": [
+    ]
+  }
+]

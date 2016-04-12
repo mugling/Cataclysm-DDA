@@ -876,14 +876,7 @@ class jmapgen_loot : public jmapgen_piece {
                         e.contents.emplace_back( e.magazine_default(), e.bday );
                     }
                     if( spawn_ammo && e.ammo_remaining() == 0 ) {
-                        if( e.magazine_current() ) {
-                            item tmp( default_ammo( e.ammo_type() ), e.bday );
-                            tmp.charges = e.ammo_capacity();
-                            e.magazine_current()->contents.push_back( tmp );
-                        } else {
-                            e.set_curammo( default_ammo( e.ammo_type() ) ) ;
-                            e.charges = e.ammo_capacity();
-                        }
+                        e.ammo_set( default_ammo( e.ammo_type() ), e.ammo_capacity() );
                     }
                 }
                 m.spawn_items( tripoint( rng( x.val, x.valmax ), rng( y.val, y.valmax ), m.get_abs_sub().z ), spawn );

@@ -184,45 +184,16 @@ void Item_modifier::modify(item &new_item) const
 
     if(ch != -1) {
         if( new_item.count_by_charges() || new_item.made_of( LIQUID ) ) {
-            // food, ammo
-            // count_by_charges requires that charges is at least 1. It makes no sense to
-            // spawn a "water (0)" item.
-            new_item.charges = std::max( 1l, ch );
-        } else if( new_item.is_tool() ) {
-            const auto qty = std::min( ch, new_item.ammo_capacity() );
-            new_item.charges = qty;
-            if( new_item.ammo_type() != "NULL" && qty > 0 ) {
-                new_item.ammo_set( new_item.ammo_type(), qty );
-            }
-        } else if( !new_item.is_gun() ) {
-            //not gun, food, ammo or tool. 
-            new_item.charges = ch;
-        }
-    }
-    
-    if( new_item.is_gun() && ( ammo.get() != nullptr || ch > 0 ) ) {
-        if( ammo.get() == nullptr ) {
-            // In case there is no explicit ammo item defined, use the default ammo
-            if( new_item.ammo_type() != "NULL" ) {
-                new_item.charges = ch;
-                new_item.set_curammo( new_item.ammo_type() );
-            }
-        } else {
-            const item am = ammo->create_single( new_item.bday );
-            new_item.set_curammo( am );
-            // Prefer explicit charges of the gun, else take the charges of the ammo item,
-            // Gun charges are easier to define: {"item":"gun","charge":10,"ammo-item":"ammo"}
-            if( ch > 0 ) {
-                new_item.charges = ch;
+            new_item.charges = std::max( 1l, ch ); // food, ammo
+
+        } else if( new_item.is_tool() || new_item.is_gun() ) {
+            if( ammo ) {
+                const item am = ammo->create_single( new_item.bday );
+                new_item.ammo_set( am.typeId(), ch > 0 ? ch : am.charges );
+
             } else {
-                new_item.charges = am.charges;
+                new_item.ammo_set( default_ammo( new_item.ammo_type() ), ch );
             }
-        }
-        // Make sure the item is in valid state
-        if( new_item.ammo_data() && new_item.magazine_integral() ) {
-            new_item.charges = std::min( new_item.charges, new_item.ammo_capacity() );
-        } else {
-            new_item.charges = 0;
         }
     }
 
@@ -352,14 +323,8 @@ Item_spawn_data::ItemList Item_group::create(int birthday, RecursionList &rec) c
         if( spawn_mags && !e.magazine_integral() && !e.magazine_current() ) {
             e.contents.emplace_back( e.magazine_default(), e.bday );
         }
-        if( spawn_ammo && e.ammo_capacity() > 0 && e.ammo_remaining() == 0 ) {
-            itype_id ammo = default_ammo( e.ammo_type() );
-            if( e.magazine_current() ) {
-                e.magazine_current()->contents.emplace_back( ammo, e.bday, e.ammo_capacity() );
-            } else {
-                e.set_curammo( ammo );
-                e.charges = e.ammo_capacity();
-            }
+        if( spawn_ammo ) {
+            e.ammo_set( default_ammo( e.ammo_type() ), e.ammo_capacity() );
         }
     }
 

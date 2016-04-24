@@ -1064,7 +1064,7 @@ void Item_factory::load_tool_armor(JsonObject &jo)
 
 void Item_factory::load( islot_book &slot, JsonObject &jo )
 {
-    assign( jo, "max_level", slot.level );
+    assign( jo, "max_level", slot.max_level );
     assign( jo, "required_level", slot.req );
     assign( jo, "fun", slot.fun );
     assign( jo, "intelligence", slot.intel );

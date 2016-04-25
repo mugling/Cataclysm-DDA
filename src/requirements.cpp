@@ -44,6 +44,17 @@ bool quality::has( const std::string &id )
 
 std::string quality_requirement::to_string( int ) const
 {
+    // handle pseudo (stat-dependent) qualities
+    if( type == "STRENGTH" ) {
+        return string_format( "%s %i", _( "strength" ), level );
+    } else if( type == "DEXTERITY" ) {
+        return string_format( "%s %i", _( "dexterity" ), level );
+    } else if( type == "INTELLIGENCE" ) {
+        return string_format( "%s %i", _( "intelligence" ), level );
+    } else if( type == "PERCEPTION" ) {
+        return string_format( "%s %i", _( "perception" ), level );
+    }
+
     return string_format( ngettext( "%d tool with %s of %d or more.",
                                     "%d tools with %s of %d or more.", count ),
                           count, quality::get_name( type ).c_str(), level );
@@ -390,8 +401,17 @@ bool requirement_data::has_comps( const inventory &crafting_inv,
     return retval;
 }
 
-bool quality_requirement::has( const inventory &crafting_inv, int ) const
+bool quality_requirement::has( const inventory &crafting_inv, const Character &ch, int ) const
 {
+    if( type == "STRENGTH" ) {
+        return ch.get_str() >= level;
+    } else if( type == "DEXTERITY" ) {
+        return ch.get_dex() >= level;
+    } else if( type == "INTELLIGENCE" ) {
+        return ch.get_int() >= level;
+    } else if( type == "PERCEPTION" ) {
+        return ch.get_per() >= level;
+    }
     return crafting_inv.has_quality( type, level, count );
 }
 

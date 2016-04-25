@@ -119,6 +119,24 @@ bool visitable<T>::has_quality( const std::string &qual, int level, int qty ) co
 }
 
 template <>
+bool visitable<Character>::has_quality( const std::string &qual, int level, int qty ) const
+{
+    auto self = static_cast<const Character *>( this );
+
+    if( qual == "STRENGTH" ) {
+        return self->get_str() >= level;
+    } else if( qual == "DEXTERITY" ) {
+        return self->get_dex() >= level;
+    } else if( qual == "INTELLIGENCE" ) {
+        return self->get_int() >= level;
+    } else if( qual == "PERCEPTION" ) {
+        return self->get_per() >= level;
+    }
+    return has_quality_internal( *this, qual, level, qty ) == qty;
+}
+
+
+template <>
 bool visitable<vehicle_selector>::has_quality( const std::string &qual, int level, int qty ) const
 {
     for( const auto& cursor : static_cast<const vehicle_selector &>( *this ) ) {
@@ -183,6 +201,16 @@ int visitable<Character>::max_quality( const std::string &qual ) const
     int res = INT_MIN;
 
     auto self = static_cast<const Character *>( this );
+
+    if( qual == "STRENGTH" ) {
+        return self->get_str();
+    } else if( qual == "DEXTERITY" ) {
+        return self->get_dex();
+    } else if( qual == "INTELLIGENCE" ) {
+        return self->get_int();
+    } else if( qual == "PERCEPTION" ) {
+        return self->get_per();
+    }
 
     if( self->has_bionic( "bio_tools" ) ) {
         res = std::max( res, item( "toolset" ).get_quality( qual ) );

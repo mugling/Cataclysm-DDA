@@ -1,6 +1,22 @@
 [
     {
         "type" : "tool_quality",
+        "id" : "STRENGTH",
+        "name" : "strength"
+    },{
+        "type" : "tool_quality",
+        "id" : "DEXTERITY",
+        "name" : "dexterity"
+    },{
+        "type" : "tool_quality",
+        "id" : "INTELLIGENCE",
+        "name" : "intelligence"
+    },{
+        "type" : "tool_quality",
+        "id" : "PERCEPTION",
+        "name" : "perception"
+    },{
+        "type" : "tool_quality",
         "id" : "CUT",
         "name" : "cutting"
     },{

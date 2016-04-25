@@ -347,20 +347,20 @@ std::vector<std::string> requirement_data::get_folded_tools_list( int width, nc_
     return output_buffer;
 }
 
-bool requirement_data::can_make_with_inventory( const inventory &crafting_inv, int batch ) const
+bool requirement_data::can_make_with_inventory( const inventory &crafting_inv, const Character& ch, int batch ) const
 {
     bool retval = true;
     // All functions must be called to update the available settings in the components.
-    if( !has_comps( crafting_inv, qualities ) ) {
+    if( !has_comps( crafting_inv, ch, qualities ) ) {
         retval = false;
     }
-    if( !has_comps( crafting_inv, tools, batch ) ) {
+    if( !has_comps( crafting_inv, ch, tools, batch ) ) {
         retval = false;
     }
-    if( !has_comps( crafting_inv, components, batch ) ) {
+    if( !has_comps( crafting_inv, ch, components, batch ) ) {
         retval = false;
     }
-    if( !check_enough_materials( crafting_inv, batch ) ) {
+    if( !check_enough_materials( crafting_inv, ch, batch ) ) {
         retval = false;
     }
     return retval;
@@ -368,6 +368,7 @@ bool requirement_data::can_make_with_inventory( const inventory &crafting_inv, i
 
 template<typename T>
 bool requirement_data::has_comps( const inventory &crafting_inv,
+                                  const Character &ch,
                                   const std::vector< std::vector<T> > &vec,
                                   int batch )
 {
@@ -375,7 +376,7 @@ bool requirement_data::has_comps( const inventory &crafting_inv,
     for( const auto &set_of_tools : vec ) {
         bool has_tool_in_set = false;
         for( const auto &tool : set_of_tools ) {
-            if( tool.has( crafting_inv, batch ) ) {
+            if( tool.has( crafting_inv, ch, batch ) ) {
                 tool.available = a_true;
             } else {
                 tool.available = a_false;
@@ -399,7 +400,7 @@ std::string quality_requirement::get_color( bool, const inventory &, int ) const
     return available == a_true ? "green" : "red";
 }
 
-bool tool_comp::has( const inventory &crafting_inv, int batch ) const
+bool tool_comp::has( const inventory &crafting_inv, const Character&, int batch ) const
 {
     if( type == "goggles_welding" ) {
         if( g->u.has_bionic( "bio_sunglasses" ) || g->u.is_wearing( "rm13_armor_on" ) ) {
@@ -430,7 +431,7 @@ std::string tool_comp::get_color( bool has_one, const inventory &crafting_inv, i
     return has_one ? "dkgray" : "red";
 }
 
-bool item_comp::has( const inventory &crafting_inv, int batch ) const
+bool item_comp::has( const inventory &crafting_inv, const Character&, int batch ) const
 {
     // If you've Rope Webs, you can spin up the webbing to replace any amount of
     // rope your projects may require.  But you need to be somewhat nourished:
@@ -484,13 +485,13 @@ const T *requirement_data::find_by_type( const std::vector< std::vector<T> > &ve
     return nullptr;
 }
 
-bool requirement_data::check_enough_materials( const inventory &crafting_inv, int batch ) const
+bool requirement_data::check_enough_materials( const inventory &crafting_inv, const Character &ch, int batch ) const
 {
     bool retval = true;
     for( const auto &component_choices : components ) {
         bool atleast_one_available = false;
         for( const auto &comp : component_choices ) {
-            if( check_enough_materials( comp, crafting_inv, batch ) ) {
+            if( check_enough_materials( comp, crafting_inv, ch, batch ) ) {
                 atleast_one_available = true;
             }
         }
@@ -502,7 +503,7 @@ bool requirement_data::check_enough_materials( const inventory &crafting_inv, in
 }
 
 bool requirement_data::check_enough_materials( const item_comp &comp,
-        const inventory &crafting_inv, int batch ) const
+        const inventory &crafting_inv, const Character &ch, int batch ) const
 {
     if( comp.available != a_true ) {
         return false;
@@ -529,7 +530,7 @@ bool requirement_data::check_enough_materials( const item_comp &comp,
         const item_comp i_tmp( comp.type, cnt + tc );
         const tool_comp t_tmp( comp.type, -( cnt + tc ) ); // not by charges!
         // batch factor is explicitly 1, because it's already included in the count.
-        if( !i_tmp.has( crafting_inv, 1 ) && !t_tmp.has( crafting_inv, 1 ) ) {
+        if( !i_tmp.has( crafting_inv, ch, 1 ) && !t_tmp.has( crafting_inv, ch, 1 ) ) {
             comp.available = a_insufficent;
         }
     }

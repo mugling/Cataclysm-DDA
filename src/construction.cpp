@@ -136,7 +136,7 @@ void draw_grid( WINDOW *w, const int list_width = 30 )
     wrefresh( w );
 }
 
-void construction_menu()
+void construction_menu( const Character& ch )
 {
     static bool hide_unconstructable = false;
     // only display constructions the player can theoretically perform
@@ -276,7 +276,7 @@ void construction_menu()
                 construction *con_first = NULL;
                 std::vector<construction *> cons = constructions_by_desc( con_name );
                 for( auto &con : cons ) {
-                    if( con->requirements.can_make_with_inventory( total_inv ) ) {
+                    if( con->requirements.can_make_with_inventory( total_inv, ch ) ) {
                         con_first = con;
                         break;
                     }
@@ -355,7 +355,7 @@ void construction_menu()
                             continue;
                         }
                         // Update the cached availability of components and tools in the requirement object
-                        current_con->requirements.can_make_with_inventory( total_inv );
+                        current_con->requirements.can_make_with_inventory( total_inv, ch );
 
                         std::vector<std::string> current_buffer;
                         std::ostringstream current_line;
@@ -595,7 +595,7 @@ bool player_can_build( player &p, const inventory &pinv, construction const *con
     if( p.skillLevel( con->skill ) < con->difficulty ) {
         return false;
     }
-    return con->requirements.can_make_with_inventory( pinv );
+    return con->requirements.can_make_with_inventory( pinv, p );
 }
 
 bool can_construct( const std::string &desc )

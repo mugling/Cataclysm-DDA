@@ -11,6 +11,7 @@
 class JsonObject;
 class JsonArray;
 class inventory;
+class Character;
 
 // Denotes the id of an item type
 typedef std::string itype_id;
@@ -60,7 +61,7 @@ struct tool_comp : public component {
     tool_comp( const itype_id &TYPE, int COUNT ) : component( TYPE, COUNT ) { }
 
     void load( JsonArray &jarr );
-    bool has( const inventory &crafting_inv, int batch = 1 ) const;
+    bool has( const inventory &crafting_inv, const Character& ch, int batch = 1 ) const;
     std::string to_string( int batch = 1 ) const;
     std::string get_color( bool has_one, const inventory &crafting_inv, int batch = 1 ) const;
     bool by_charges() const;
@@ -71,7 +72,7 @@ struct item_comp : public component {
     item_comp( const itype_id &TYPE, int COUNT ) : component( TYPE, COUNT ) { }
 
     void load( JsonArray &jarr );
-    bool has( const inventory &crafting_inv, int batch = 1 ) const;
+    bool has( const inventory &crafting_inv, const Character& ch, int batch = 1 ) const;
     std::string to_string( int batch = 1 ) const;
     std::string get_color( bool has_one, const inventory &crafting_inv, int batch = 1 ) const;
 };
@@ -89,7 +90,7 @@ struct quality_requirement {
     }
 
     void load( JsonArray &jarr );
-    bool has( const inventory &crafting_inv, int = 0 ) const;
+    bool has( const inventory &crafting_inv, const Character& ch, int = 0 ) const;
     std::string to_string( int = 0 ) const;
     void check_consistency( const std::string &display_name ) const;
     std::string get_color( bool has_one, const inventory &crafting_inv, int = 0 ) const;
@@ -164,7 +165,7 @@ struct requirement_data {
         const alter_quali_req_vector &get_qualities() const;
         const alter_item_comp_vector &get_components() const;
 
-        bool can_make_with_inventory( const inventory &crafting_inv, int batch = 1 ) const;
+        bool can_make_with_inventory( const inventory &crafting_inv, const Character& ch, int batch = 1 ) const;
 
         int print_components( WINDOW *w, int ypos, int xpos, int width, nc_color col,
                               const inventory &crafting_inv, int batch = 1 ) const;
@@ -182,8 +183,8 @@ struct requirement_data {
         const requirement_data disassembly_requirements() const;
 
     private:
-        bool check_enough_materials( const inventory &crafting_inv, int batch = 1 ) const;
-        bool check_enough_materials( const item_comp &comp, const inventory &crafting_inv,
+        bool check_enough_materials( const inventory &crafting_inv, const Character &ch, int batch = 1 ) const;
+        bool check_enough_materials( const item_comp &comp, const inventory &crafting_inv, const Character &ch,
                                      int batch = 1 ) const;
 
         template<typename T>
@@ -193,8 +194,8 @@ struct requirement_data {
         static std::string print_missing_objs( const std::string &header,
                                                const std::vector< std::vector<T> > &objs );
         template<typename T>
-        static bool has_comps( const inventory &crafting_inv, const std::vector< std::vector<T> > &vec,
-                               int batch = 1 );
+        static bool has_comps( const inventory &crafting_inv, const Character& ch,
+                               const std::vector< std::vector<T> > &vec, int batch = 1 );
         template<typename T>
         static int print_list( WINDOW *w, int ypos, int xpos, int width, nc_color col,
                                const inventory &crafting_inv, const std::vector< std::vector<T> > &objs, int batch = 1 );

@@ -284,7 +284,7 @@ bool player::has_morale_to_craft() const
 void player::craft()
 {
     int batch_size = 0;
-    const recipe *rec = select_crafting_recipe( batch_size );
+    const recipe *rec = select_crafting_recipe( *this, batch_size );
     if (rec) {
         if ( crafting_allowed( *this, *rec ) ) {
             make_craft( rec->ident(), batch_size );
@@ -305,7 +305,7 @@ void player::recraft()
 void player::long_craft()
 {
     int batch_size = 0;
-    const recipe *rec = select_crafting_recipe( batch_size );
+    const recipe *rec = select_crafting_recipe( *this, batch_size );
     if (rec) {
         if ( crafting_allowed( *this, *rec ) ) {
             make_all_craft( rec->ident(), batch_size );
@@ -451,10 +451,10 @@ bool player::can_make( const recipe *r, int batch_size )
     }
 
     const inventory &crafting_inv = crafting_inventory();
-    return r->can_make_with_inventory( crafting_inv, batch_size );
+    return r->can_make_with_inventory( crafting_inv, *this, batch_size );
 }
 
-bool recipe::can_make_with_inventory(const inventory &crafting_inv, int batch) const
+bool recipe::can_make_with_inventory( const inventory &crafting_inv, const Character& ch, int batch ) const
 {
     if (g->u.has_trait( "DEBUG_HS" )) {
         return true;
@@ -463,7 +463,7 @@ bool recipe::can_make_with_inventory(const inventory &crafting_inv, int batch) c
     if( !g->u.knows_recipe( this ) && -1 == g->u.has_recipe( this, crafting_inv) ) {
         return false;
     }
-    return requirements.can_make_with_inventory(crafting_inv, batch);
+    return requirements.can_make_with_inventory( crafting_inv, ch, batch );
 }
 
 bool recipe::valid_learn() const
@@ -499,7 +499,7 @@ void player::invalidate_crafting_inventory()
     cached_turn = -1;
 }
 
-void batch_recipes(const inventory &crafting_inv,
+void batch_recipes(const inventory &crafting_inv, const Character& ch,
                    std::vector<const recipe *> &current,
                    std::vector<bool> &available, const recipe *rec)
 {
@@ -1241,7 +1241,7 @@ bool player::can_disassemble( const item &dis_item, const recipe *cur_recipe,
     const auto &dis_requirements = cur_recipe->requirements.disassembly_requirements();
     for( const auto &itq : dis_requirements.get_qualities() ) {
         for( const auto &it : itq ) {
-            if( !it.has( crafting_inv ) ) {
+            if( !it.has( crafting_inv, *this ) ) {
                 if( print_msg ) {
                     add_msg( m_info, _("To disassemble %s, you need %s"),
                         dis_name.c_str(), it.to_string().c_str() );

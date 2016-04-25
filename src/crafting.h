@@ -92,7 +92,7 @@ struct recipe {
 
         bool has_byproducts() const;
 
-        bool can_make_with_inventory( const inventory &crafting_inv, int batch = 1 ) const;
+        bool can_make_with_inventory( const inventory &crafting_inv, const Character &ch, int batch = 1 ) const;
         bool check_eligible_containers_for_crafting( int batch = 1 ) const;
 
         // Can this recipe be memorized?
@@ -124,12 +124,14 @@ void finalize_recipes();
 // Show the "really disassemble?" query along with a list of possible results.
 // Returns false if the player answered no to the query.
 bool query_dissamble( const item &dis_item );
-const recipe *select_crafting_recipe( int &batch_size );
+const recipe *select_crafting_recipe( int &batch_size, const Character &ch );
 void pick_recipes( const inventory &crafting_inv,
+                   const Character &ch,
                    std::vector<const recipe *> &current,
                    std::vector<bool> &available, std::string tab,
                    std::string subtab, std::string filter );
 void batch_recipes( const inventory &crafting_inv,
+                    const Character &ch,
                     std::vector<const recipe *> &current,
                     std::vector<bool> &available, const recipe *r );
 

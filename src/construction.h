@@ -52,7 +52,7 @@ void remove_construction_if( std::function<bool ( construction & )> pred );
 
 void load_construction( JsonObject &jsobj );
 void reset_constructions();
-void construction_menu();
+void construction_menu( const Character &ch );
 void complete_construction();
 void check_constructions();
 

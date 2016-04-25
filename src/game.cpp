@@ -2856,7 +2856,7 @@ bool game::handle_action()
             } else if (u.has_active_mutation("SHELL2")) {
                 add_msg(m_info, _("You can't construct while you're in your shell."));
             } else {
-                construction_menu();
+                construction_menu( g->u );
             }
             break;
 

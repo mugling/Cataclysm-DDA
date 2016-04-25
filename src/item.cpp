@@ -1846,7 +1846,7 @@ std::string item::info( bool showtext, std::vector<iteminfo> &info ) const
                     }
                     found_recipe = true;
                     // darken recipes you can't currently craft
-                    bool can_make = r->can_make_with_inventory( inv );
+                    bool can_make = r->can_make_with_inventory( inv, g->u );
                     if( !can_make ) {
                         temp1 << "<dark>";
                     }

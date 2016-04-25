@@ -94,7 +94,7 @@ void reset_recipe_categories()
     craft_subcat_list.clear();
 }
 
-const recipe *select_crafting_recipe( int &batch_size )
+const recipe *select_crafting_recipe( const Character &ch, int &batch_size )
 {
     if( normalized_names.empty() ) {
         translate_all();
@@ -197,10 +197,10 @@ const recipe *select_crafting_recipe( int &batch_size )
             current.clear();
             available.clear();
             if( batch ) {
-                batch_recipes( crafting_inv, current, available, chosen );
+                batch_recipes( crafting_inv, ch, current, available, chosen );
             } else {
                 // Set current to all recipes in the current tab; available are possible to make
-                pick_recipes( crafting_inv, current, available, tab.cur(), subtab.cur(), filterstring );
+                pick_recipes( crafting_inv, ch, current, available, tab.cur(), subtab.cur(), filterstring );
             }
         }
 
@@ -683,6 +683,7 @@ bool lcmatch_any( const std::vector< std::vector<T> > &list_of_list, const std::
 }
 
 void pick_recipes( const inventory &crafting_inv,
+                   const Character &ch,
                    std::vector<const recipe *> &current,
                    std::vector<bool> &available, std::string tab,
                    std::string subtab, std::string filter )
@@ -804,7 +805,7 @@ void pick_recipes( const inventory &crafting_inv,
     for( int i = max_difficulty; i != -1; --i ) {
         for( auto rec : filtered_list ) {
             if( rec->difficulty == i ) {
-                if( rec->can_make_with_inventory( crafting_inv ) ) {
+                if( rec->can_make_with_inventory( crafting_inv, ch ) ) {
                     current.insert( current.begin(), rec );
                     available.insert( available.begin(), true );
                     truecount++;

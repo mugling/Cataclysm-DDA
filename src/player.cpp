@@ -9940,7 +9940,7 @@ void player::mend_item( item_location&& obj, bool interactive )
     auto inv = crafting_inventory();
 
     for( auto& f : faults ) {
-        f.second = f.first->requirements().can_make_with_inventory( inv );
+        f.second = f.first->requirements().can_make_with_inventory( inv, *this );
     }
 
     int sel = 0;

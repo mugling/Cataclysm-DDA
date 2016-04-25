@@ -200,6 +200,49 @@ void vpart_info::load( JsonObject &jo )
         next_part.qualities[ pair.get_string( 0 ) ] = pair.get_int( 1 );
     }
 
+    auto req = jo.get_object( "requirements" );
+    if( req.has_object( "install" ) ) {
+        auto obj = req.get_object( "install" );
+        next_part.req_install.load( obj );
+
+    } else {
+        if( next_part.has_flag( "TOOL_WRENCH" ) ) {
+            next_part.req_install.qualities = { { { "WRENCH", 1, 1 }, { "STRENGTH", 1, 1 } } };
+
+        } else if( next_part.has_flag( "TOOL_SCREWDRIVER" ) ) {
+            next_part.req_install.qualities = { { { "SCREW", 1, 1 } } };
+
+        } else if( next_part.has_flag( "NAILABLE" ) ) {
+            next_part.req_install.qualities = { { { "HAMMER", 1, 1 } } };
+            next_part.req_install.components = { { { "nail", 10 } } };
+
+        } else if( !next_part.has_flag( "TOOL_NONE" ) ) {
+            next_part.req_install.qualities = { { { "WRENCH", 1, 1 } }, { { "GLARE", 1, 2 } } };
+            next_part.req_install.tools = { { { "welder", 50 }, { "welder_crude", 75 }, { "oxy_torch", 4 } } };
+        }
+        next_part.req_install.components.push_back( { { next_part.item, 1 } } );
+    }
+
+    if( req.has_object( "remove" ) ) {
+        auto obj = req.get_object( "remove" );
+        next_part.req_remove.load( obj );
+
+    } else {
+        if( next_part.has_flag( "TOOL_WRENCH" ) ) {
+            next_part.req_remove.tools = { { { "wrench", -1 } } };
+
+        } else if( next_part.has_flag( "TOOL_SCREWDRIVER" ) ) {
+            next_part.req_remove.tools = { { { "screwdriver", -1 } } };
+
+        } else if( next_part.has_flag( "NAILABLE" ) ) {
+            next_part.req_remove.qualities = { { { "HAMMER", 1, 1 } } };
+
+        } else if( !next_part.has_flag( "TOOL_NONE" ) ) {
+            next_part.req_remove.qualities = { { { "WRENCH_FINE", 1, 1 } } };
+            next_part.req_remove.tools = { { { "hacksaw", -1 } } , { { "oxy_torch", 4 } } };
+        }
+    }
+
     //Calculate and cache z-ordering based off of location
     // list_order is used when inspecting the vehicle
     if(next_part.location == "on_roof") {
@@ -288,6 +331,9 @@ void vpart_info::check()
         if( part.has_flag( "TURRET" ) && !item::find_type( part.item )->gun ) {
             debugmsg( "vehicle part %s has the TURRET flag, but is not made from a gun item", part.id.c_str(), part.item.c_str() );
         }
+
+        part.req_install.check_consistency( part.id.c_str() );
+        part.req_remove.check_consistency( part.id.c_str() );
     }
 }
 

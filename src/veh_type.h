@@ -4,6 +4,7 @@
 #include "string_id.h"
 #include "int_id.h"
 #include "enums.h"
+#include "requirements.h"
 
 #include <vector>
 #include <bitset>
@@ -108,6 +109,14 @@ struct vpart_info {
         std::bitset<NUM_VPFLAGS> bitflags; // flags checked so often that things slow down due to string cmp
     public:
 
+        requirement_data requirements_install() const {
+            return req_install;
+        }
+
+        requirement_data requirements_remove() const {
+            return req_remove;
+        }
+
         int z_order;        // z-ordering, inferred from location, cached here
         int list_order;     // Display order in vehicle interact display
 
@@ -122,6 +131,9 @@ struct vpart_info {
         static void load( JsonObject &jo );
         static void check();
         static void reset();
+
+        requirement_data req_install;
+        requirement_data req_remove;
 
         static const std::vector<const vpart_info *> &get_all();
 };

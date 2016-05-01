@@ -2789,8 +2789,8 @@ int iuse::water_purifier(player *p, item *it, bool, const tripoint& )
 {
     auto loc = g->inv_map_splice( []( const item & itm ) {
         return !itm.contents.empty() &&
-               ( itm.contents[0].type->id == "water" ||
-                 itm.contents[0].type->id == "salt_water" );
+               ( itm.contents.front().typeId() == "water" ||
+                 itm.contents.front().typeId() == "salt_water" );
     }, _( "Purify what?" ), 1 );
 
     item *target = loc.get_item();
@@ -2803,7 +2803,7 @@ int iuse::water_purifier(player *p, item *it, bool, const tripoint& )
         return 0;
     }
 
-    item *pure = &target->contents[0];
+    item *pure = &target->contents.front();
     if (pure->type->id != "water" && pure->type->id != "salt_water") {
         p->add_msg_if_player(m_info, _("You can only purify water."));
         return 0;
@@ -5707,7 +5707,7 @@ static bool heat_item(player *p)
 {
    auto loc = g->inv_map_splice( []( const item & itm ) {
         return (itm.is_food() && itm.has_flag("EATEN_HOT")) ||
-            (itm.is_food_container() && itm.contents[0].has_flag("EATEN_HOT"));
+            (itm.is_food_container() && itm.contents.front().has_flag("EATEN_HOT"));
     }, _( "Heat up what?" ), 1 );
 
     item *heat = loc.get_item();
@@ -5716,7 +5716,7 @@ static bool heat_item(player *p)
         return false;
     }
 
-    item *target = heat->is_food_container() ? &(heat->contents[0]) : heat;
+    item *target = heat->is_food_container() ? &(heat->contents.front()) : heat;
     if ((target->is_food()) && (target->has_flag("EATEN_HOT"))) {
         p->moves -= 300;
         add_msg(_("You heat up the food."));
@@ -5769,13 +5769,13 @@ int iuse::quiver(player *p, item *it, bool, const tripoint& )
     }
 
     int choice = -1;
-    if (!(it->contents.empty()) && it->contents[0].charges > 0) {
+    if (!(it->contents.empty()) && it->contents.front().charges > 0) {
         choice = menu(true, _("Do what with quiver?"), _("Store more arrows"),
                       _("Empty quiver"), _("Cancel"), NULL);
 
         // empty quiver
         if (choice == 2) {
-            item &arrows = it->contents[0];
+            item &arrows = it->contents.front();
             int arrowsRemoved = arrows.charges;
             p->add_msg_if_player(ngettext("You remove the %1$s from the %2$s.", "You remove the %1$s from the %2$s.",
                                           arrowsRemoved),
@@ -5812,17 +5812,17 @@ int iuse::quiver(player *p, item *it, bool, const tripoint& )
         int arrowsStored = 0;
 
         // not empty so adding more arrows
-        if (!(it->contents.empty()) && it->contents[0].charges > 0) {
-            if (it->contents[0].type->id != put->type->id) {
+        if (!(it->contents.empty()) && it->contents.front().charges > 0) {
+            if (it->contents.front().type->id != put->type->id) {
                 p->add_msg_if_player(m_info, _("Those aren't the same arrows!"));
                 return 0;
             }
-            if (it->contents[0].charges >= maxArrows) {
+            if (it->contents.front().charges >= maxArrows) {
                 p->add_msg_if_player(m_info, _("That %s is already full!"), it->tname().c_str());
                 return 0;
             }
-            arrowsStored = it->contents[0].charges;
-            it->contents[0].charges += put->charges;
+            arrowsStored = it->contents.front().charges;
+            it->contents.front().charges += put->charges;
             p->i_rem(put);
 
             // empty, putting in new arrows
@@ -5831,18 +5831,18 @@ int iuse::quiver(player *p, item *it, bool, const tripoint& )
         }
 
         // handle overflow
-        if (it->contents[0].charges > maxArrows) {
-            int toomany = it->contents[0].charges - maxArrows;
-            it->contents[0].charges -= toomany;
-            item clone = it->contents[0];
+        if (it->contents.front().charges > maxArrows) {
+            int toomany = it->contents.front().charges - maxArrows;
+            it->contents.front().charges -= toomany;
+            item clone = it->contents.front();
             clone.charges = toomany;
             p->i_add(clone);
         }
 
-        arrowsStored = it->contents[0].charges - arrowsStored;
+        arrowsStored = it->contents.front().charges - arrowsStored;
         p->add_msg_if_player(ngettext("You store %1$d %2$s in your %3$s.", "You store %1$d %2$s in your %3$s.",
                                       arrowsStored),
-                             arrowsStored, it->contents[0].type_name( arrowsStored ).c_str(), it->tname().c_str());
+                             arrowsStored, it->contents.front().type_name( arrowsStored ).c_str(), it->tname().c_str());
         p->moves -= 10 * arrowsStored;
     } else {
         p->add_msg_if_player(_("Never mind."));
@@ -7328,7 +7328,7 @@ int iuse::radiocar(player *p, item *it, bool, const tripoint& )
                       _("Put a bomb to car"), _("Cancel"), NULL);
     } else if (it->contents.size() == 1) {
         choice = menu(true, _("Using RC car:"), _("Turn on"),
-                      it->contents[0].tname().c_str(), _("Cancel"), NULL);
+                      it->contents.front().tname().c_str(), _("Cancel"), NULL);
     }
     if (choice == 3) {
         return 0;
@@ -7343,7 +7343,7 @@ int iuse::radiocar(player *p, item *it, bool, const tripoint& )
         item bomb;
 
         if( !it->contents.empty() ) {
-            bomb = it->contents[0];
+            bomb = it->contents.front();
         }
 
         it->convert( "radio_car_on" ).active = true;
@@ -7382,7 +7382,7 @@ int iuse::radiocar(player *p, item *it, bool, const tripoint& )
             }
         } else { // Disarm the car
             p->moves -= 150;
-            item &bomb = it->contents[0];
+            item &bomb = it->contents.front();
 
             p->inv.assign_empty_invlet(bomb, true); // force getting an invlet.
             p->i_add(bomb);
@@ -7419,7 +7419,7 @@ int iuse::radiocaron(player *p, item *it, bool t, const tripoint &pos)
         item bomb;
 
         if (!it->contents.empty()) {
-            bomb = it->contents[0];
+            bomb = it->contents.front();
         }
 
         it->convert( "radio_car" ).active = false;
@@ -7890,7 +7890,7 @@ int iuse::multicooker(player *p, item *it, bool t, const tripoint &pos)
         }
 
         if (mc_take == choice) {
-            item &dish = it->contents[0];
+            item &dish = it->contents.front();
 
             if (dish.has_flag("HOT")) {
                 p->add_msg_if_player(m_good, _("You got the dish from the multi-cooker.  The %s smells delicious."),

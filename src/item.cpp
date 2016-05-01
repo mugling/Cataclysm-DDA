@@ -463,16 +463,9 @@ bool item::stacks_with( const item &rhs ) const
     if( contents.size() != rhs.contents.size() ) {
         return false;
     }
-    for( size_t i = 0; i < contents.size(); i++ ) {
-        if( contents[i].charges != rhs.contents[i].charges ) {
-            // Don't stack *containers* with different sized contents.
-            return false;
-        }
-        if( !contents[i].stacks_with( rhs.contents[i] ) ) {
-            return false;
-        }
-    }
-    return true;
+    return std::equal( contents.begin(), contents.end(), rhs.contents.begin(), []( const item& a, const item& b ) {
+        return a.charges == b.charges && a.stacks_with( b );
+    } );
 }
 
 bool item::merge_charges( const item &rhs )
@@ -716,7 +709,7 @@ std::string item::info( bool showtext, std::vector<iteminfo> &info ) const
                 info.push_back( iteminfo( "BASE", _( "age: " ), "",
                                           ( int( calendar::turn ) - bday ) / ( 10 * 60 ), true, "", true, true ) );
 
-                const item *food = is_food_container() ? &contents[ 0 ] : this;
+                const item *food = is_food_container() ? &contents.front() : this;
                 if( food && food->goes_bad() ) {
                     info.push_back( iteminfo( "BASE", _( "bday rot: " ), "",
                                               ( int( calendar::turn ) - food->bday ), true, "", true, true ) );
@@ -1680,8 +1673,8 @@ std::string item::info( bool showtext, std::vector<iteminfo> &info ) const
             }
         }
 
-        if( is_brewable() || ( !contents.empty() && contents[0].is_brewable() ) ) {
-            const item &brewed = !is_brewable() ? contents[0] : *this;
+        if( is_brewable() || ( !contents.empty() && contents.front().is_brewable() ) ) {
+            const item &brewed = !is_brewable() ? contents.front() : *this;
             int btime = brewed.brewing_time();
             if( btime <= HOURS(48) )
                 info.push_back( iteminfo( "DESCRIPTION",
@@ -1764,8 +1757,8 @@ std::string item::info( bool showtext, std::vector<iteminfo> &info ) const
             }
         }
 
-        if( ( is_food() && goes_bad() ) || ( is_food_container() && contents[0].goes_bad() ) ) {
-            if( rotten() || ( is_food_container() && contents[0].rotten() ) ) {
+        if( ( is_food() && goes_bad() ) || ( is_food_container() && contents.front().goes_bad() ) ) {
+            if( rotten() || ( is_food_container() && contents.front().rotten() ) ) {
                 if( g->u.has_bionic( "bio_digestion" ) ) {
                     info.push_back( iteminfo( "DESCRIPTION",
                                               _( "This food has started to <neutral>rot</neutral>, but <info>your bionic digestion can tolerate it</info>." ) ) );
@@ -1813,7 +1806,7 @@ std::string item::info( bool showtext, std::vector<iteminfo> &info ) const
                     info.push_back( iteminfo( "DESCRIPTION", mod->type->description ) );
                 }
             } else {
-                info.push_back( iteminfo( "DESCRIPTION", contents[0].type->description ) );
+                info.emplace_back( "DESCRIPTION", contents.front().type->description );
             }
         }
 
@@ -1822,7 +1815,7 @@ std::string item::info( bool showtext, std::vector<iteminfo> &info ) const
         if( contents.empty() ) { // use this item
             tid = type->id;
         } else { // use the contained item
-            tid = contents[0].type->id;
+            tid = contents.front().typeId();
         }
         const std::vector<recipe *> &rec = recipe_dict.of_component( tid );
         if( !rec.empty() ) {
@@ -1951,7 +1944,7 @@ nc_color item::color_in_inventory() const
             ret = c_green;
     } else if( is_food() || is_food_container() ) {
         const bool preserves = type->container && type->container->preserves;
-        const item &to_color = is_food() ? *this : contents[0];
+        const item &to_color = is_food() ? *this : contents.front();
         // Default: permafood, drugs
         // Brown: rotten (for non-saprophages) or non-rotten (for saprophages)
         // Dark gray: inedible
@@ -2216,15 +2209,15 @@ std::string item::tname( unsigned int quantity, bool with_prefix ) const
         ret << "+";
         maintext = ret.str();
     } else if (contents.size() == 1) {
-        if(contents[0].made_of(LIQUID)) {
-            maintext = rmp_format(_("<item_name>%s of %s"), label(quantity).c_str(), contents[0].tname( quantity, with_prefix ).c_str());
-        } else if (contents[0].is_food()) {
-            maintext = contents[0].charges > 1 ? rmp_format(_("<item_name>%s of %s"), label(quantity).c_str(),
-                                                            contents[0].tname(contents[0].charges, with_prefix).c_str()) :
+        if( contents.front().made_of( LIQUID ) ) {
+            maintext = rmp_format(_("<item_name>%s of %s"), label(quantity).c_str(), contents.front().tname( quantity, with_prefix ).c_str());
+        } else if( contents.front().is_food() ) {
+            maintext = contents.front().charges > 1 ? rmp_format(_("<item_name>%s of %s"), label(quantity).c_str(),
+                                                            contents.front().tname(contents.front().charges, with_prefix).c_str()) :
                                                  rmp_format(_("<item_name>%s of %s"), label(quantity).c_str(),
-                                                            contents[0].tname( quantity, with_prefix ).c_str());
+                                                            contents.front().tname( quantity, with_prefix ).c_str());
         } else {
-            maintext = rmp_format(_("<item_name>%s with %s"), label(quantity).c_str(), contents[0].tname( quantity, with_prefix ).c_str());
+            maintext = rmp_format(_("<item_name>%s with %s"), label(quantity).c_str(), contents.front().tname( quantity, with_prefix ).c_str());
         }
     }
     else if (!contents.empty()) {
@@ -2333,9 +2326,9 @@ std::string item::display_name(unsigned int quantity) const
             break;
     }
 
-    if( is_container() && contents.size() == 1 && contents[0].charges > 0 ) {
+    if( is_container() && contents.size() == 1 && contents.front().charges > 0 ) {
         // a container which is not empty
-        qty = string_format(" (%i)", contents[0].charges);
+        qty = string_format(" (%i)", contents.front().charges);
     } else if( is_book() && get_chapters() > 0 ) {
         // a book which has remaining unread chapters
         qty = string_format(" (%i)", get_remaining_chapters(g->u));
@@ -2343,7 +2336,7 @@ std::string item::display_name(unsigned int quantity) const
         // anything that can be reloaded including tools, magazines, guns and auxiliary gunmods
         qty = string_format(" (%i)", ammo_remaining());
     } else if( is_ammo_container() && !contents.empty() ) {
-        qty = string_format( " (%i)", contents[0].charges );
+        qty = string_format( " (%i)", contents.front().charges );
     } else if( count_by_charges() ) {
         qty = string_format(" (%i)", charges);
     }
@@ -3341,7 +3334,7 @@ bool item::is_food(player const*u) const
 
 bool item::is_food_container(player const*u) const
 {
-    return (contents.size() >= 1 && contents[0].is_food(u));
+    return (contents.size() >= 1 && contents.front().is_food(u));
 }
 
 bool item::is_food() const
@@ -3356,7 +3349,7 @@ bool item::is_brewable() const
 
 bool item::is_food_container() const
 {
-    return (contents.size() >= 1 && contents[0].is_food());
+    return (contents.size() >= 1 && contents.front().is_food());
 }
 
 bool item::is_corpse() const
@@ -3381,7 +3374,7 @@ void item::set_mtype( const mtype * const m )
 
 bool item::is_ammo_container() const
 {
-    return !is_magazine() && !contents.empty() && contents[0].is_ammo();
+    return !is_magazine() && !contents.empty() && contents.front().is_ammo();
 }
 
 bool item::is_weap() const
@@ -3488,7 +3481,7 @@ bool item::is_container_full( bool allow_bucket ) const
     if( is_container_empty() ) {
         return false;
     }
-    return get_remaining_capacity_for_liquid( contents[0], allow_bucket ) == 0;
+    return get_remaining_capacity_for_liquid( contents.front(), allow_bucket ) == 0;
 }
 
 bool item::is_salvageable() const
@@ -3518,9 +3511,9 @@ bool item::is_funnel_container(int &bigger_than) const
     }
     if (
         contents.empty() ||
-        contents[0].typeId() == "water" ||
-        contents[0].typeId() == "water_acid" ||
-        contents[0].typeId() == "water_acid_weak") {
+        contents.front().typeId() == "water" ||
+        contents.front().typeId() == "water_acid" ||
+        contents.front().typeId() == "water_acid_weak") {
         bigger_than = type->container->contains;
         return true;
     }
@@ -3581,15 +3574,15 @@ bool item::spill_contents( Character &c )
     }
 
     while( !contents.empty() ) {
-        if( contents[0].made_of( LIQUID ) ) {
-            long charges_pre = contents[0].charges;
-            if( g->handle_liquid( contents[0], false, false, this, nullptr, 1 ) ) {
+        if( contents.front().made_of( LIQUID ) ) {
+            long charges_pre = contents.front().charges;
+            if( g->handle_liquid( contents.front(), false, false, this, nullptr, 1 ) ) {
                 contents.erase( contents.begin() );
-            } else if( charges_pre == contents[0].charges ) {
+            } else if( charges_pre == contents.front().charges ) {
                 return false;
             }
         } else {
-            c.i_add_or_drop( contents[0] );
+            c.i_add_or_drop( contents.front() );
             contents.erase( contents.begin() );
         }
     }
@@ -3651,8 +3644,8 @@ bool item::operator<(const item& other) const
     if(cat_a != cat_b) {
         return cat_a < cat_b;
     } else {
-        const item *me = is_container() && !contents.empty() ? &contents[0] : this;
-        const item *rhs = other.is_container() && !other.contents.empty() ? &other.contents[0] : &other;
+        const item *me = is_container() && !contents.empty() ? &contents.front() : this;
+        const item *rhs = other.is_container() && !other.contents.empty() ? &other.contents.front() : &other;
 
         if (me->type->id == rhs->type->id) {
             return me->charges < rhs->charges;
@@ -4106,7 +4099,7 @@ const itype * item::ammo_data() const
     }
 
     if( is_magazine() ) {
-        return !contents.empty() ? contents[0].ammo_data() : nullptr;
+        return !contents.empty() ? contents.front().ammo_data() : nullptr;
     }
 
     return curammo;
@@ -4354,7 +4347,7 @@ item::reload_option::reload_option( const player *who, const item *target, const
     long amt = 1;
 
     if( this->ammo->is_ammo_container() ) {
-        amt = this->ammo->contents[ 0 ].charges;
+        amt = this->ammo->contents.front().charges;
 
     } else if( this->ammo->is_ammo() ) {
         amt = this->ammo->charges;
@@ -4387,7 +4380,7 @@ void item::reload_option::qty( long val )
         qty_ = std::min( { val, ammo->charges, target->ammo_capacity() - target->ammo_remaining() } );
 
     } else if( ammo->is_ammo_container() ) {
-        qty_ = std::min( { val, ammo->contents[ 0 ].charges, target->ammo_capacity() - target->ammo_remaining() } );
+        qty_ = std::min( { val, ammo->contents.front().charges, target->ammo_capacity() - target->ammo_remaining() } );
 
     } else {
         qty_ = 1L; // when reloading target using a magazine
@@ -4409,7 +4402,7 @@ item::reload_option item::pick_reload_ammo( player &u, bool prompt ) const
 
     for( const auto e : opts ) {
         for( item_location& ammo : u.find_ammo( *e ) ) {
-            auto id = ammo->is_ammo_container() ? ammo->contents[0].typeId() : ammo->typeId();
+            auto id = ammo->is_ammo_container() ? ammo->contents.front().typeId() : ammo->typeId();
             if( u.can_reload( *e, id ) || e->has_flag( "RELOAD_AND_SHOOT" ) ) {
                 ammo_list.emplace_back( &u, e, this, std::move( ammo ) );
             }
@@ -4471,7 +4464,7 @@ item::reload_option item::pick_reload_ammo( player &u, bool prompt ) const
 
         } else if( e.ammo->is_ammo_container() && u.is_worn( *e.ammo ) ) {
             // worn ammo containers should be named by their contents with their location also updated below
-            return e.ammo->contents[ 0 ].display_name();
+            return e.ammo->contents.front().display_name();
 
         } else {
             return e.ammo->display_name();
@@ -4523,7 +4516,7 @@ item::reload_option item::pick_reload_ammo( player &u, bool prompt ) const
         row += string_format( " %-7d ", sel.moves() );
 
         if( is_gun() || is_magazine() ) {
-            const itype *ammo = sel.ammo->is_ammo_container() ? sel.ammo->contents[ 0 ].ammo_data() : sel.ammo->ammo_data();
+            const itype *ammo = sel.ammo->is_ammo_container() ? sel.ammo->contents.front().ammo_data() : sel.ammo->ammo_data();
             if( ammo ) {
                 row += string_format( "| %-7d | %-7d", ammo->ammo->damage, ammo->ammo->pierce );
             } else {
@@ -4559,7 +4552,7 @@ item::reload_option item::pick_reload_ammo( player &u, bool prompt ) const
     itype_id last = uistate.lastreload[ ammo_type() ];
 
     for( auto i = 0; i != (int) ammo_list.size(); ++i ) {
-        const item& ammo = ammo_list[ i ].ammo->is_ammo_container() ? ammo_list[ i ].ammo->contents[ 0 ] : *ammo_list[ i ].ammo;
+        const item& ammo = ammo_list[ i ].ammo->is_ammo_container() ? ammo_list[ i ].ammo->contents.front() : *ammo_list[ i ].ammo;
 
         char hotkey = -1;
         if( u.has_item( ammo ) ) {
@@ -4592,7 +4585,7 @@ item::reload_option item::pick_reload_ammo( player &u, bool prompt ) const
     }
 
     const item_location& sel = ammo_list[ menu.ret ].ammo;
-    uistate.lastreload[ ammo_type() ] = sel->is_ammo_container() ? sel->contents[ 0 ].typeId() : sel->typeId();
+    uistate.lastreload[ ammo_type() ] = sel->is_ammo_container() ? sel->contents.front().typeId() : sel->typeId();
     return std::move( ammo_list[ menu.ret ] );
 }
 
@@ -4623,7 +4616,7 @@ bool item::reload( player &u, item_location loc, long qty )
     item *container = nullptr;
     if ( ammo->is_ammo_container() ) {
         container = ammo;
-        ammo = &ammo->contents[0];
+        ammo = &ammo->contents.front();
     }
 
     // Chance to fail pulling an arrow at lower levels
@@ -4645,7 +4638,7 @@ bool item::reload( player &u, item_location loc, long qty )
     // for holsters and ammo pouches try to reload any contained item
     if( type->can_use( "holster" ) && !contents.empty() ) {
         // @todo add moves penalty
-        obj = &contents[ 0 ];
+        obj = &contents.front();
     }
 
     if( !obj->is_reloadable() ) {
@@ -4861,7 +4854,7 @@ long item::get_remaining_capacity_for_liquid( const item &liquid, bool allow_buc
 
     long remaining_capacity = total_capacity;
     if (!contents.empty()) {
-        remaining_capacity -= contents[0].charges;
+        remaining_capacity -= contents.front().charges;
     }
     return remaining_capacity;
 }
@@ -4887,7 +4880,7 @@ item::LIQUID_FILL_ERROR item::has_valid_capacity_for_liquid( const item &liquid,
         return L_ERR_NOT_CONTAINER;
     }
 
-    if( !contents.empty() && contents[0].type->id != liquid.type->id ) {
+    if( !contents.empty() && contents.front().typeId() != liquid.typeId() ) {
         return L_ERR_NO_MIX;
     }
 
@@ -4901,7 +4894,7 @@ item::LIQUID_FILL_ERROR item::has_valid_capacity_for_liquid( const item &liquid,
 
     if (!contents.empty()) {
         const auto total_capacity = liquid.liquid_charges( type->container->contains);
-        if( (total_capacity - contents[0].charges) <= 0) {
+        if( ( total_capacity - contents.front().charges) <= 0 ) {
             return L_ERR_FULL;
         }
     }
@@ -4960,7 +4953,7 @@ bool item::fill_with( item &liquid, std::string &err, bool allow_bucket )
     const long amount = std::min( remaining_capacity, liquid.charges );
 
     if( !is_container_empty() ) {
-        contents[0].charges += amount;
+        contents.front().charges += amount;
     } else {
         item liquid_copy = liquid;
         liquid_copy.charges = amount;
@@ -5046,7 +5039,7 @@ void item::set_snippet( const std::string &snippet_id )
 const item_category &item::get_category() const
 {
     if(is_container() && !contents.empty()) {
-        return contents[0].get_category();
+        return contents.front().get_category();
     }
     if(type != 0) {
         if(type->category == 0) {
@@ -5116,7 +5109,7 @@ bool item_ptr_compare_by_charges( const item *left, const item *right)
     } else if( right->contents.empty()) {
         return true;
     } else {
-        return right->contents[0].charges < left->contents[0].charges;
+        return right->contents.front().charges < left->contents.front().charges;
     }
 }
 
@@ -5141,12 +5134,12 @@ int item::quiver_store_arrow( item &arrow)
         return 0;
     }
 
-    if( !contents.empty() && contents[0].type->id != arrow.type->id) {
+    if( !contents.empty() && contents.front().typeId() != arrow.typeId() ) {
         return 0;
     }
 
     long max_arrows = (long)max_charges_from_flag( "QUIVER");
-    if( !contents.empty() && contents[0].charges >= max_arrows) {
+    if( !contents.empty() && contents.front().charges >= max_arrows) {
         return 0;
     }
 
@@ -5158,8 +5151,8 @@ int item::quiver_store_arrow( item &arrow)
         arrow.charges -= quivered_arrow.charges;
         return quivered_arrow.charges;
     } else {
-        int quivered = std::min( max_arrows - contents[0].charges, arrow.charges);
-        contents[0].charges += quivered;
+        int quivered = std::min( max_arrows - contents.front().charges, arrow.charges );
+        contents.front().charges += quivered;
         arrow.charges -= quivered;
         return quivered;
     }
@@ -5295,7 +5288,7 @@ std::string item::components_to_string() const
 bool item::needs_processing() const
 {
     return active || has_flag("RADIO_ACTIVATION") ||
-           ( is_container() && !contents.empty() && contents[0].needs_processing() ) ||
+           ( is_container() && !contents.empty() && contents.front().needs_processing() ) ||
            is_artifact();
 }
 

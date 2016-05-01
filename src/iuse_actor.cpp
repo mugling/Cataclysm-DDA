@@ -1924,8 +1924,8 @@ bool bandolier_actor::can_store( const item &bandolier, const item &obj ) const
     if( !obj.is_ammo() ) {
         return false;
     }
-    if( !bandolier.contents.empty() && ( bandolier.contents[0].typeId() != obj.typeId() ||
-                                         bandolier.contents[0].charges >= capacity ) ) {
+    if( !bandolier.contents.empty() && ( bandolier.contents.front().typeId() != obj.typeId() ||
+                                         bandolier.contents.front().charges >= capacity ) ) {
         return false;
     }
     return std::count( ammo.begin(), ammo.end(), obj.type->ammo->type );
@@ -1967,9 +1967,9 @@ bool bandolier_actor::store( player &p, item &bandolier, item &obj ) const
             bandolier.put_in( p.i_rem( &obj ) );
         }
     } else {
-        qty = std::min( obj.charges, capacity - bandolier.contents[0].charges );
+        qty = std::min( obj.charges, capacity - bandolier.contents.front().charges );
 
-        if( bandolier.contents[0].typeId() != obj.typeId() ) {
+        if( bandolier.contents.front().typeId() != obj.typeId() ) {
             p.add_msg_if_player( m_info, _( "Your %1$s already contains a different type of ammo" ),
                                  bandolier.type_name().c_str() );
             return false;
@@ -1980,7 +1980,7 @@ bool bandolier_actor::store( player &p, item &bandolier, item &obj ) const
         }
 
         obj.charges -= qty;
-        bandolier.contents[0].charges += qty;
+        bandolier.contents.front().charges += qty;
         if( obj.charges <= 0 ) {
             p.i_rem( &obj );
         }
@@ -2006,7 +2006,7 @@ long bandolier_actor::use( player *p, item *it, bool, const tripoint & ) const
 
     std::vector<std::function<void()>> actions;
 
-    menu.addentry( -1, it->contents.empty() || it->contents[0].charges < capacity,
+    menu.addentry( -1, it->contents.empty() || it->contents.front().charges < capacity,
                    'r', string_format( _( "Store ammo in %s" ), it->type_name().c_str() ) );
 
     actions.emplace_back( [&] {
@@ -2026,7 +2026,7 @@ long bandolier_actor::use( player *p, item *it, bool, const tripoint & ) const
                    it->type_name().c_str() ) );
 
     actions.emplace_back( [&] {
-        if( p->i_add_or_drop( it->contents[0] ) ) {
+        if( p->i_add_or_drop( it->contents.front() ) ) {
             it->contents.erase( it->contents.begin() );
         } else {
             p->add_msg_if_player( _( "Never mind." ) );

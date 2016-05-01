@@ -10892,7 +10892,7 @@ void game::plfire( bool burst, const tripoint &default_target )
         }
     }
 
-    if( u.weapon.is_auxiliary_gunmod() ) {
+    if( u.weapon.is_gunmod() ) {
         add_msg( m_info, _( "The %s must be attached to a gun, it can not be fired separately." ), u.weapon.tname().c_str() );
         return;
     }
@@ -11542,13 +11542,10 @@ bool game::unload( item &it )
     std::vector<std::string> msgs( 1, it.tname() );
     std::vector<item *> opts( 1, &it );
 
-    if( it.is_gun() ) {
-        for( auto &e : it.contents ) {
-            if( e.is_auxiliary_gunmod() && !e.has_flag( "NO_UNLOAD" ) &&
-                ( e.magazine_current() || e.ammo_remaining() > 0 ) ) {
-                msgs.emplace_back( e.tname() );
-                opts.emplace_back( &e );
-            }
+    for( auto &e : it.gunmods() ) {
+        if( !e->has_flag( "NO_UNLOAD" ) && ( e->magazine_current() || e->ammo_remaining() > 0 ) ) {
+            msgs.emplace_back( e->tname() );
+            opts.emplace_back( e );
         }
     }
 

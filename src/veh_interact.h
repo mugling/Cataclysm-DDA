@@ -1,12 +1,16 @@
 #ifndef VEH_INTERACT_H
 #define VEH_INTERACT_H
 
-#include <vector>
-#include "output.h"
 #include "inventory.h"
 #include "input.h"
+#include "color.h"
+#include "cursesdef.h" // WINDOW
 #include "string_id.h"
 #include "int_id.h"
+
+#include <string>
+#include <vector>
+#include <map>
 
 #define DUCT_TAPE_USED 100
 #define NAILS_USED 10
@@ -111,6 +115,7 @@ class veh_interact
 
         void do_install();
         void do_repair();
+        void do_mend();
         void do_refill();
         void do_remove();
         void do_rename();

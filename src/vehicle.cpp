@@ -3141,13 +3141,11 @@ int vehicle::drain (const itype_id & ftype, int amount) {
 
     int drained = 0;
     for( auto &p : parts ) {
-        if( amount <= 0 ) {
+        if( drained >= amount ) {
             break;
         }
         if( p.ammo_current() == ftype ) {
-            int qty = p.ammo_consume( amount, global_part_pos3( p ) );
-            drained += qty;
-            amount -= qty;
+            drained += p.ammo_consume( amount, global_part_pos3( p ) );
         }
     }
 

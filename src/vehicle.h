@@ -787,9 +787,6 @@ public:
     void shift_parts( point delta );
     bool shift_if_needed();
 
-    /** empty the contents of a tank, battery or turret spilling liquids randomly on the ground */
-    void leak_fuel( int p );
-
     void shed_loose_parts();
 
     // Gets range of part p if it's a turret
@@ -1032,6 +1029,9 @@ private:
 
     void refresh_mass() const;
     void calc_mass_center( bool precalc ) const;
+
+    /** empty the contents of a tank, battery or turret spilling liquids randomly on the ground */
+    void leak_fuel( vehicle_part &pt );
 
     mutable bool mass_dirty                     = true;
     mutable bool mass_center_precalc_dirty      = true;

@@ -615,6 +615,9 @@ public:
 
     void consume_fuel( double load );
 
+    /** nett electrical power (watts) from all parts not dependent upon external factors */
+    int power_passive() const;
+
     void power_parts();
 
     /**

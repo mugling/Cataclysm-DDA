@@ -3642,6 +3642,39 @@ void vehicle::consume_fuel( double load = 1.0 )
     }
 }
 
+int vehicle::power_passive() const
+{
+    return std::accumulate( parts.begin(), parts.end(), 0, [&]( const int &lhs, const vehicle_part &pt ) {
+        if( pt.hp < 0 || !pt.enabled ) {
+            return lhs; // skip damaged or disabled parts
+        }
+
+        const auto& vp = pt.info();
+        if( vp.epower == 0 ) {
+            return lhs; // skip parts that neither produce nor consume electrical power
+        }
+
+        if( vp.has_flag( VPFLAG_ALTERNATOR ) ||
+            vp.has_flag( VPFLAG_SOLAR_PANEL ) ||
+            vp.has_flag( VPFLAG_RECHARGE ) ||
+            vp.has_flag( "REACTOR" ) ) {
+            return lhs; // skip active parts where power usage depends upon external factors
+        }
+
+        // some engines require electrical power to operate (for example ignition)
+        if( vp.has_flag( VPFLAG_ENGINE ) && vp.fuel_type == "battery" ) {
+            return lhs; // electric engines only consume power upon usage
+        }
+
+        // producers are affected by damage but consumers are not
+        if( vp.epower > 0 ) {
+            return int( lhs + ( vp.epower * ( pt.hp / double( vp.durability ) ) ) );
+        } else {
+            return lhs - vp.epower;
+        }
+    } );
+}
+
 void vehicle::power_parts()
 {
     int epower = 0;

@@ -1569,6 +1569,11 @@ void vehicle_part::deserialize(JsonIn &jsin)
         }
         base.item_tags.insert( "VEHICLE" );
     }
+
+    // destroyed parts should not contain ammo
+    if( hp < 0 && ammo_remaining() ) {
+        ammo_unset();
+    }
 }
 
 void vehicle_part::serialize(JsonOut &json) const

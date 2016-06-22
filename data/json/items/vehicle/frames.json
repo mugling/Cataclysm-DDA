@@ -1,0 +1,94 @@
+[
+  {
+    "id": "foldframe",
+    "type": "GENERIC",
+    "category": "veh_parts",
+    "name": "foldable-light frame",
+    "description": "A small foldable lightweight frame made from pipework.",
+    "weight": 5000,
+    "volume": 40,
+    "price": 4000,
+    "material": "steel",
+    "symbol": "]",
+    "color": "light_gray"
+  },
+  {
+    "id": "foldwoodframe",
+    "type": "GENERIC",
+    "category": "veh_parts",
+    "name": "foldable wooden frame",
+    "description": "A small foldable frame made from scrap wood.",
+    "weight": 4000,
+    "volume": 50,
+    "price": 4000,
+    "material": "wood",
+    "symbol": "]",
+    "color": "brown"    
+  },
+  {
+    "id": "frame",
+    "type": "GENERIC",
+    "category": "veh_parts",
+    "name": "steel frame",
+    "description": "A large frame made of steel.  Useful for crafting.",
+    "weight": 20000,
+    "volume": 60,
+    "price": 5500,
+    "material": "steel",
+    "symbol": "]",
+    "color": "light_gray"
+  },
+  {
+    "id": "frame_wood",
+    "type": "GENERIC",
+    "category": "veh_parts",
+    "name": "wooden frame",
+    "description": "A large frame made of wood.  Useful for crafting.",
+    "weight": 8000,
+    "volume": 60,
+    "price": 3500,
+    "material": "wood",
+    "symbol": "]",
+    "color": "brown"
+  },
+  {
+    "id": "frame_wood_light",
+    "type": "GENERIC",
+    "category": "veh_parts",
+    "name": "light wooden frame",
+    "description": "A small frame made of few pieces of wood, held together by rope.  Useful for crafting.",
+    "weight": 4000,
+    "volume": 35,
+    "price": 1000,
+    "material": "wood",
+    "symbol": "]",
+    "color": "brown"
+  },
+  {
+    "id": "hdframe",
+    "type": "GENERIC",
+    "category": "veh_parts",
+    "name": "heavy duty frame",
+    "description": "A large, reinforced steel frame, used in military vehicle construction.",
+    "weight": 100000,
+    "volume": 80,
+    "price": 12000,
+    "material": "steel",
+    "symbol": "]",
+    "color": "gray"
+
+  },
+  {
+    "id": "xlframe",
+    "type": "GENERIC",
+    "category": "veh_parts",
+    "name": "extra-light frame",
+    "description": "A small lightweight frame made from pipework.  Useful for crafting.",
+    "weight": 5000,
+    "volume": 40,
+    "price": 4000,
+    "material": "steel",
+    "symbol": "]",
+    "color": "light_gray"
+  }
+]

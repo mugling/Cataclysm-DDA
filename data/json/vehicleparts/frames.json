@@ -9,6 +9,19 @@
     "durability": 50,
     "difficulty": 2,
     "folded_volume": 10,
+    "requirements": {
+      "install": {
+        "skills": [ [ "mechanics", 3 ] ],
+        "time": 90000,
+        "qualities": [ { "id": "GLARE", "level": 2 } ],
+        "tools": [ [ [ "welder", 50 ], [ "welder_crude", 75 ], [ "toolset", 75 ], [ "oxy_torch", 10 ] ] ],
+        "components": [ [ [ "foldframe", 1 ] ] ]
+      },
+      "removal": {
+        "skills": [ [ "mechanics", 1 ] ],
+        "qualities": [ { "id": "SAW_M", "level": 2 } ]
+      }
+    },
     "breaks_into": [
       { "item": "steel_chunk", "count": [ 0, 2 ] },
       { "item": "scrap", "count": [ 1, 2 ] }
@@ -27,11 +40,23 @@
     "durability": 15,
     "difficulty": 2,
     "folded_volume": 15,
-    "flags": [ "INITIAL_PART", "MOUNTABLE", "FOLDABLE", "NAILABLE" ],
+    "requirements": {
+      "install": {
+        "skills": [ [ "carpentry", 2 ], [ "mechanics", 1 ] ],
+        "time": 90000,
+        "qualities": [ { "id": "HAMMER", "level": 2 } ],
+        "components": [ [ [ "foldwoodframe", 1 ] ], [ [ "nail", 20 ] ] ]
+      },
+      "removal": {
+        "skills": [ [ "carpentry", 2 ] ],
+        "qualities": [ { "id": "HAMMER", "level": 2 } ]
+      }
+    },
     "breaks_into": [
       { "item": "splinter", "count": [ 0, 6 ] },
       { "item": "nail", "charges": [ 1, 15 ] }
-    ]
+    ],
+    "flags": [ "INITIAL_PART", "MOUNTABLE", "FOLDABLE" ]
   },
   {
     "abstract": "frame",
@@ -46,7 +71,7 @@
         "skills": [ [ "mechanics", 1 ] ],
         "time": 120000,
         "qualities": [ { "id": "GLARE", "level": 2 } ],
-        "tools": [ [ [ "welder", 50 ], [ "welder_crude", 75 ], [ "toolset", 75 ], [ "oxy_torch", 20 ] ] ],
+        "tools": [ [ [ "welder", 100 ], [ "welder_crude", 150 ], [ "toolset", 150 ], [ "oxy_torch", 20 ] ] ],
         "components": [ [ [ "frame", 1 ] ] ]
       },
       "removal": {
@@ -67,11 +92,22 @@
     "broken_color": "brown",
     "durability": 150,
     "difficulty": 1,
+    "requirements": {
+      "install": {
+        "skills": [ [ "carpentry", 2 ] ],
+        "time": 60000,
+        "qualities": [ { "id": "HAMMER", "level": 2 } ],
+        "components": [ [ [ "frame_wood", 1 ] ], [ [ "nail", 20 ] ] ]
+      },
+      "removal": {
+        "skills": [ [ "carpentry", 2 ] ],
+        "qualities": [ { "id": "HAMMER", "level": 2 } ]
+      }
+    },
     "breaks_into": [
         { "item": "splinter", "count": [ 7, 9 ] },
         { "item": "nail", "charges": [ 5, 10 ] }
-    ],
-    "flags": [ "NAILABLE" ]
+    ]
   },
   {
     "abstract": "frame_wood_light",
@@ -81,13 +117,19 @@
     "location": "structure",
     "color": "brown",
     "broken_color": "brown",
-    "durability": 100,
-    "difficulty": 0,
+    "durability": 20,
+    "difficulty": 1,
+    "requirements": {
+      "install": {
+        "skills": [ [ "survival", 1 ] ],
+        "time": 30000,
+        "components": [ [ [ "frame_wood_light", 1 ] ], [ [ "string_36", 4 ] ] ]
+      }
+    },
     "breaks_into": [
       { "item": "splinter", "count": [ 3, 5 ] },
       { "item": "string_36", "count": [ 10, 15 ] }
-    ],
-    "flags": [ "NAILABLE" ]
+    ]
   },
   {
     "abstract": "hdframe",
@@ -103,7 +145,7 @@
         "skills": [ [ "mechanics", 3 ] ],
         "time": 240000,
         "qualities": [ { "id": "GLARE", "level": 2 } ],
-        "tools": [ [ [ "welder", 200 ], [ "welder_crude", 300 ], [ "toolset", 300 ], [ "oxy_torch", 60 ] ] ],
+        "tools": [ [ [ "welder", 200 ], [ "welder_crude", 300 ], [ "toolset", 300 ], [ "oxy_torch", 40 ] ] ],
         "components": [ [ [ "hdframe", 1 ] ] ]
       },
       "removal": {
@@ -122,7 +164,20 @@
     "location": "structure",
     "color": "light_gray",
     "durability": 150,
-    "difficulty": 1,
+    "difficulty": 2,
+    "requirements": {
+      "install": {
+        "skills": [ [ "mechanics", 2 ] ],
+        "time": 60000,
+        "qualities": [ { "id": "GLARE", "level": 2 } ],
+        "tools": [ [ [ "welder", 50 ], [ "welder_crude", 75 ], [ "toolset", 75 ], [ "oxy_torch", 10 ] ] ],
+        "components": [ [ [ "xlframe", 1 ] ] ]
+      },
+      "removal": {
+        "skills": [ [ "mechanics", 1 ] ],
+        "qualities": [ { "id": "SAW_M", "level": 2 } ]
+      }
+    },
     "breaks_into": "ig_vp_xlframe",
     "flags": [ "MOUNTABLE" ]
   },

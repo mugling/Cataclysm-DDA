@@ -106,11 +106,11 @@
     "subcategory": "CSC_OTHER_VEHICLE",
     "skill_used": "fabrication",
     "difficulty": 1,
-    "time": 8000,
+    "time": 30000,
     "reversible": true,
     "autolearn": true,
     "qualities": [ { "id": "GLARE", "level": 2 } ],
-    "tools": [ [ [ "welder", 60 ], [ "welder_crude", 90 ], [ "toolset", 90 ], [ "oxy_torch", 6 ] ] ],
+    "tools": [ [ [ "welder", 50 ], [ "welder_crude", 50 ], [ "toolset", 75 ], [ "oxy_torch", 10 ] ] ],
     "components": [ [ [ "pipe", 4 ] ] ]
   },
   {
@@ -140,15 +140,15 @@
     "subcategory": "CSC_OTHER_VEHICLE",
     "skill_used": "fabrication",
     "difficulty": 1,
-    "time": 8000,
+    "time": 60000,
     "reversible": true,
     "autolearn": true,
     "qualities": [ { "id": "GLARE", "level": 2 } ],
     "tools": [
       [ [ "crucible", -1 ], [ "crucible_clay", -1 ] ],
-      [ [ "welder", 50 ], [ "welder_crude", 75 ], [ "toolset", 75 ], [ "forge", 50 ], [ "oxy_torch", 10 ] ]
+      [ [ "welder", 100 ], [ "welder_crude", 150 ], [ "toolset", 150 ], [ "oxy_torch", 20 ] ]
     ],
-    "components": [ [ [ "steel_lump", 10 ] ] ]
+    "components": [ [ [ "steel_lump", 20 ] ] ]
   },
   {
     "result": "frame_wood",
@@ -188,15 +188,15 @@
     "subcategory": "CSC_OTHER_VEHICLE",
     "skill_used": "fabrication",
     "difficulty": 1,
-    "time": 8000,
+    "time": 120000,
     "reversible": true,
     "autolearn": true,
     "qualities": [ { "id": "GLARE", "level": 2 } ],
     "tools": [
       [ [ "crucible", -1 ], [ "crucible_clay", -1 ] ],
-      [ [ "welder", 50 ], [ "welder_crude", 75 ], [ "toolset", 75 ], [ "forge", 50 ], [ "oxy_torch", 10 ] ]
+      [ [ "welder", 200 ], [ "welder_crude", 300 ], [ "toolset", 300 ], [ "oxy_torch", 40 ] ]
     ],
-    "components": [ [ [ "steel_lump", 18 ] ] ]
+    "components": [ [ [ "steel_lump", 100 ] ] ]
   },
   {
     "result": "xlframe",
@@ -205,11 +205,11 @@
     "subcategory": "CSC_OTHER_VEHICLE",
     "skill_used": "fabrication",
     "difficulty": 1,
-    "time": 8000,
+    "time": 30000,
     "reversible": true,
     "autolearn": true,
     "qualities": [ { "id": "GLARE", "level": 2 } ],
-    "tools": [ [ [ "welder", 60 ], [ "welder_crude", 90 ], [ "toolset", 90 ], [ "oxy_torch", 6 ] ] ],
+    "tools": [ [ [ "welder", 50 ], [ "welder_crude", 50 ], [ "toolset", 75 ], [ "oxy_torch", 10 ] ] ],
     "components": [ [ [ "pipe", 4 ] ] ]
   }
 ]

@@ -98,5 +98,118 @@
       [ [ "paper", 50 ] ],
       [ [ "duct_tape", 20 ] ]
     ]
+  },
+  {
+    "result": "foldframe",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_VEHICLE",
+    "skill_used": "fabrication",
+    "difficulty": 1,
+    "time": 8000,
+    "reversible": true,
+    "autolearn": true,
+    "qualities": [ { "id": "GLARE", "level": 2 } ],
+    "tools": [ [ [ "welder", 60 ], [ "welder_crude", 90 ], [ "toolset", 90 ], [ "oxy_torch", 6 ] ] ],
+    "components": [ [ [ "pipe", 4 ] ] ]
+  },
+  {
+    "result": "foldwoodframe",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_VEHICLE",
+    "skill_used": "fabrication",
+    "difficulty": 2,
+    "time": 9000,
+    "reversible": true,
+    "autolearn": true,
+    "qualities": [
+      { "id":"HAMMER","level":1 },
+      { "id":"CUT","level":1 }
+    ],
+    "components": [
+      [ [ "2x4", 5 ] ],
+      [ [ "stick", 2] ],
+      [ [ "nail", 20 ] ]
+    ]
+  },
+  {
+    "result": "frame",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_VEHICLE",
+    "skill_used": "fabrication",
+    "difficulty": 1,
+    "time": 8000,
+    "reversible": true,
+    "autolearn": true,
+    "qualities": [ { "id": "GLARE", "level": 2 } ],
+    "tools": [
+      [ [ "crucible", -1 ], [ "crucible_clay", -1 ] ],
+      [ [ "welder", 50 ], [ "welder_crude", 75 ], [ "toolset", 75 ], [ "forge", 50 ], [ "oxy_torch", 10 ] ]
+    ],
+    "components": [ [ [ "steel_lump", 10 ] ] ]
+  },
+  {
+    "result": "frame_wood",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_VEHICLE",
+    "skill_used": "fabrication",
+    "difficulty": 1,
+    "time": 6000,
+    "reversible": true,
+    "autolearn": true,
+    "qualities":[ { "id":"HAMMER", "level": 1 } ],
+    "components": [
+      [ [ "2x4", 5 ] ],
+      [ [ "nail", 20 ] ]
+    ]
+  },
+  {
+    "result": "frame_wood_light",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_VEHICLE",
+    "skill_used": "fabrication",
+    "difficulty": 0,
+    "time": 4000,
+    "reversible": true,
+    "autolearn": true,
+    "components": [
+      [ [ "2x4", 3 ], [ "stick", 6 ] ],
+      [ [ "rope_6", 3 ] ]
+    ]
+  },
+  {
+    "result": "hdframe",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_VEHICLE",
+    "skill_used": "fabrication",
+    "difficulty": 1,
+    "time": 8000,
+    "reversible": true,
+    "autolearn": true,
+    "qualities": [ { "id": "GLARE", "level": 2 } ],
+    "tools": [
+      [ [ "crucible", -1 ], [ "crucible_clay", -1 ] ],
+      [ [ "welder", 50 ], [ "welder_crude", 75 ], [ "toolset", 75 ], [ "forge", 50 ], [ "oxy_torch", 10 ] ]
+    ],
+    "components": [ [ [ "steel_lump", 18 ] ] ]
+  },
+  {
+    "result": "xlframe",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_VEHICLE",
+    "skill_used": "fabrication",
+    "difficulty": 1,
+    "time": 8000,
+    "reversible": true,
+    "autolearn": true,
+    "qualities": [ { "id": "GLARE", "level": 2 } ],
+    "tools": [ [ [ "welder", 60 ], [ "welder_crude", 90 ], [ "toolset", 90 ], [ "oxy_torch", 6 ] ] ],
+    "components": [ [ [ "pipe", 4 ] ] ]
   }
 ]

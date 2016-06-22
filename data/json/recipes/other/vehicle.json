@@ -123,13 +123,9 @@
     "time": 9000,
     "reversible": true,
     "autolearn": true,
-    "qualities": [
-      { "id":"HAMMER","level":1 },
-      { "id":"CUT","level":1 }
-    ],
+    "qualities": [ { "id":"HAMMER", "level": 2 } ],
     "components": [
-      [ [ "2x4", 5 ] ],
-      [ [ "stick", 2] ],
+      [ [ "2x4", 8 ] ],
       [ [ "nail", 20 ] ]
     ]
   },
@@ -160,9 +156,9 @@
     "time": 6000,
     "reversible": true,
     "autolearn": true,
-    "qualities":[ { "id":"HAMMER", "level": 1 } ],
+    "qualities":[ { "id": "HAMMER", "level": 2 } ],
     "components": [
-      [ [ "2x4", 5 ] ],
+      [ [ "2x4", 8 ] ],
       [ [ "nail", 20 ] ]
     ]
   },
@@ -177,8 +173,8 @@
     "reversible": true,
     "autolearn": true,
     "components": [
-      [ [ "2x4", 3 ], [ "stick", 6 ] ],
-      [ [ "rope_6", 3 ] ]
+      [ [ "2x4", 4 ], [ "stick", 4 ] ],
+      [ [ "string_36", 4 ] ]
     ]
   },
   {

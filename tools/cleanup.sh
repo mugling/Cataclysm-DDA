@@ -66,6 +66,7 @@ case $task in
     none    ) cleanup "." $@;;
     item    ) cleanup "sort_by(.id)" $@;;
     recipe  ) cleanup "sort_by(.result)" $@;;
+    mission ) cleanup "sort_by(.id)" $@;;
     uncraft ) cleanup "sort_by(.result)" $@;;
 
     * ) usage;;

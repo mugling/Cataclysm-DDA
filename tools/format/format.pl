@@ -99,31 +99,33 @@ sub encode(@) {
     return $json->encode($data);
 }
 
-my ($original, $result, $dirty);
+my ($original, $dirty);
+my @parsed;
 
 while(<>) {
+    $original .= $_;
+    $dirty .= $_;
     eval {
-        $original .= $_;
-        $dirty .= $_;
         $json->incr_parse($_);
-
-        for (my $obj; $obj = $json->incr_parse;) {
+        for (my $obj; $obj = $json->incr_parse; push @parsed, $obj) {
             $dirty = $json->incr_text;
-
-            # Process each object with the type field providing root context
-            $obj = [ $obj ] unless (ref($obj) eq 'ARRAY');
-            my @output = map { encode($_, $_->{'type'} // '' ) } @{$obj};
-
-            # Indent everything formatted output wrap in an array
-            $result .= "[\n" . join( ",\n", @output ) =~ s/^/  /mgr . "\n]\n";
         }
-
     };
     die "ERROR: Syntax error on line $.\n" if $@;
 }
 
 # If we have unparsed content fail unless is insignificant whitespace
 die "ERROR: Syntax error at EOF\n" if $dirty =~ /[^\s]/;
+
+my $result;
+foreach (@parsed) {
+    # Process each object with the type field providing root context
+    $_ = [ $_ ] unless (ref($_) eq 'ARRAY');
+    my @output = map { encode($_, $_->{'type'} // '' ) } @{$_};
+
+    # Indent everything formatted output wrap in an array
+    $result .= "[\n" . join( ",\n", @output ) =~ s/^/  /mgr . "\n]\n";
+}
 
 print $result unless $opts{'q'};
 exit 0 unless $opts{'c'};

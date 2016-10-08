@@ -2942,24 +2942,47 @@ int vehicle::fuel_capacity (const itype_id &ftype) const
     } );
 }
 
-int vehicle::refill (const itype_id & ftype, int amount)
+bool vehicle::refill( item& liquid )
 {
-    for( auto &p : parts ) {
-        if( amount <= 0 ) {
-            break;
-        }
-        if( !p.is_broken() && ftype == p.ammo_current() ) {
-            int qty = std::min( long( amount ), p.ammo_capacity() - p.ammo_remaining() );
-            p.ammo_set( p.ammo_current(), p.ammo_remaining() + qty );
-            amount -= qty;
+    if( !( liquid.count_by_charges() && liquid.made_of( LIQUID ) ) ) {
+        debugmsg( "Tried to refill %s with non-fuel %s", name.c_str(), liquid.tname().c_str() );
+        return false;
+    }
+
+    // get all vehicle parts
+    std::vector<vehicle_part *> tanks;
+    std::transform( parts.begin(), parts.end(), std::back_inserter( tanks ),
+                    []( vehicle_part &e ) { return &e; } );
+
+    // exclude any that couldn't contain @ref liquid
+    tanks.erase( std::remove_if( tanks.begin(), tanks.end(), [&liquid]( const vehicle_part *e ) {
+        return !e->can_reload( liquid.typeId() );
+    } ), tanks.end() );
+
+    // sort tanks in decending order of contained volume
+    std::sort( tanks.rbegin(), tanks.rend(), []( const vehicle_part *lhs, const vehicle_part *rhs ) {
+        return lhs->ammo_remaining() < rhs->ammo_remaining();
+    } );
+
+    // volume required to store one charge of @ref liquid
+    units::volume scale = liquid.volume() / liquid.charges;
+
+    // top off existing tanks before starting to fill empty tanks
+    bool fill = false;
+    for( auto pt : tanks ) {
+        int cur = pt->ammo_capacity() - pt->ammo_remaining();
+        int qty = std::min( units::from_milliliter( cur ) / scale, int( liquid.charges ) );
+        if( qty > 0 ) {
+            fill = true;
+            liquid.charges -= qty;
+            pt->ammo_set( liquid.typeId(), pt->ammo_remaining() + units::to_milliliter( qty * scale ) );
         }
     }
 
-    if( ftype != fuel_type_battery && ftype != fuel_type_plasma ) {
+    if( fill ) {
         invalidate_mass();
     }
-
-    return amount;
+    return fill;
 }
 
 int vehicle::drain (const itype_id & ftype, int amount) {

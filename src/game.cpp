@@ -10231,23 +10231,6 @@ void game::grab()
     }
 }
 
-std::vector<vehicle*> nearby_vehicles_for( const itype_id &ft )
-{
-    std::vector<vehicle*> result;
-    for( auto && p : g->m.points_in_radius( g->u.pos(), 1 ) ) {
-        vehicle * const veh = g->m.veh_at( p );
-        // TODO: constify fuel_left and fuel_capacity
-        // TODO: add a fuel_capacity_left function
-        if( std::find( result.begin(), result.end(), veh ) != result.end() ) {
-            continue;
-        }
-        if( veh != nullptr && veh->fuel_left( ft ) < veh->fuel_capacity( ft ) ) {
-            result.push_back( veh );
-        }
-    }
-    return result;
-}
-
 void game::handle_all_liquid( item liquid, const int radius )
 {
     while( liquid.charges > 0l ) {
@@ -10375,7 +10358,16 @@ bool game::handle_liquid( item &liquid, item * const source, const int radius,
         }
     } );
 
-    for( auto &veh : nearby_vehicles_for( liquid.typeId() ) ) {
+    std::set<vehicle *> opts;
+    for( const auto &e : g->m.points_in_radius( g->u.pos(), 1 ) ) {
+        auto veh = g->m.veh_at( e );
+        if( veh && std::any_of( veh->parts.begin(), veh->parts.end(), [&liquid]( const vehicle_part &pt ) {
+            return pt.can_reload( liquid.typeId() );
+        } ) ) {
+            opts.insert( veh );
+        }
+    }
+    for( auto veh : opts ) {
         if( veh == source_veh ) {
             continue;
         }

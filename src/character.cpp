@@ -2071,25 +2071,11 @@ bool Character::pour_into( item &container, item &liquid )
 
 bool Character::pour_into( vehicle &veh, item &liquid )
 {
-    const itype_id &ftype = liquid.typeId();
-    const int fuel_per_charge = fuel_charges_to_amount_factor( ftype );
-    const int fuel_cap = veh.fuel_capacity( ftype );
-    const int fuel_amnt = veh.fuel_left( ftype );
-    if( fuel_cap <= 0 ) {
-        //~ %1$s - transport name, %2$s liquid fuel name
-        add_msg_if_player( m_info, _( "The %1$s doesn't use %2$s." ), veh.name.c_str(), liquid.type_name().c_str() );
+    if( !veh.refill( liquid ) ) {
+        //~ %1$s -vehicle name, %2$s fuel name
+        add_msg_if_player( m_info, _( "The %1$s cannot contain any more %2$s." ),
+                           veh.name.c_str(), liquid.type_name().c_str() );
         return false;
-    } else if( fuel_amnt >= fuel_cap ) {
-        add_msg_if_player( m_info, _( "The %s is already full." ), veh.name.c_str() );
-        return false;
-    }
-    const int charges_to_move = std::min<int>( liquid.charges, ( fuel_cap - fuel_amnt ) / fuel_per_charge );
-    liquid.charges -= charges_to_move + (veh.refill( ftype, charges_to_move * fuel_per_charge ) / fuel_per_charge);
-    if( veh.fuel_left( ftype ) < fuel_cap ) {
-        add_msg_if_player( _( "You refill the %1$s with %2$s." ), veh.name.c_str(), liquid.type_name().c_str() );
-    } else {
-        add_msg_if_player( _( "You refill the %1$s with %2$s to its maximum." ), veh.name.c_str(),
-                 liquid.type_name().c_str() );
     }
     return true;
 }

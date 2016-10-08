@@ -735,9 +735,12 @@ public:
     int fuel_left (const itype_id &ftype, bool recurse = false) const;
     int fuel_capacity (const itype_id &ftype) const;
 
-    // refill fuel tank(s) with given type of fuel
-    // returns amount of leftover fuel
-    int refill (const itype_id &ftype, int amount);
+    /**
+     *  Attempt to refill onboard vehicle tanks with some or all of specified liquid
+     *  @param liquid item to attempt refill with (will be mutated if refilling occurs)
+     *  @return whether any refilling occurred
+     */
+    bool refill( item &liquid );
 
     // drains a fuel type (e.g. for the kitchen unit)
     // returns amount actually drained, does not engage reactor

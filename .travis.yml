@@ -45,6 +45,8 @@ matrix:
             - binutils-mingw-w64-i686
             - gcc-mingw-w64-i686
             - g++-mingw-w64-i686
+      before_script:
+        - 7z x cdda-win64-codeblocks.7z
 
     - os: osx
       env: LOCALIZE=0

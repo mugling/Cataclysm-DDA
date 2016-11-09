@@ -543,9 +543,9 @@ endif
 # Global settings for Windows targets (at end)
 ifeq ($(TARGETSYSTEM),WINDOWS)
     LDFLAGS += -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lversion
-    CXXFLAGS += -IWinDepend
-    CXXFLAGS += -IWinDepend/SDL
-    CXXFLAGS += -IWinDepend/lua5.1
+    CXXFLAGS += -IWinDepend/include
+    CXXFLAGS += -IWinDepend/include/SDL
+    CXXFLAGS += -IWinDepend/include/lua5.1
     LDFLAGS += -LWinDepend/lib
 endif
 

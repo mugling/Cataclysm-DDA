@@ -9,53 +9,34 @@ before_install:
   - git diff --quiet master Makefile
   - git diff --quiet master tools/format/format.pl
 
+install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libjson-perl astyle
+
+before_script:
+  - make astyle-check
+  - make lint-check
+
 matrix:
   include:
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          packages:
-            - libjson-perl
-            - astyle
-      before_script:
-        - make astyle-check
-        - make lint-check
+    - env:
+      script:
+        - make
 
-    - os: linux
-      env: TILES=1 SOUND=1 LUA=1
-      compiler: gcc
-      addons:
-        apt:
-          packages:
-            - libsdl2-dev
-            - libsdl2-ttf-dev
-            - libsdl2-image-dev
-            - libsdl2-mixer-dev
-            - lua5.1
-            - liblua5.1-0-dev
+    - env: TILES=1 SOUND=1 LUA=1
+      script:
+        - sudo apt-get install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-mixer-dev
+        - sudo apt-get install -y lua5.1 liblua5.1-0-dev
+        - make
 
     - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include" LDFLAGS="-L./WinDepend/lib" LOCALIZE=0
-      addons:
-        apt:
-          packages:
-            - p7zip-full
-            - binutils-mingw-w64-i686
-            - gcc-mingw-w64-i686
-            - g++-mingw-w64-i686
-      before_script:
+        - sudo apt-get install -y p7zip-full
+        - sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
         - 7z x cdda-win64-codeblocks.7z
+        - make
 
-    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/include/SDL2" LDFLAGS="-L./WinDepend/lib" LOCALIZE=0 TILES=1
-      addons:
-        apt:
-          packages:
-            - p7zip-full
-            - binutils-mingw-w64-i686
-            - gcc-mingw-w64-i686
-            - g++-mingw-w64-i686
-      before_script:
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/SDL2" LDFLAGS="-L./WinDepend/lib" LOCALIZE=0 TILES=1
+        - sudo apt-get install -y p7zip-full
+        - sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
         - 7z x cdda-win64-codeblocks.7z
-
-script:
-  - make
+        - make

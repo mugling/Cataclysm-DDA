@@ -17,31 +17,27 @@ install:
   - sudo apt-get install -y libjson-perl astyle
   - sudo apt-get install -y lua5.1 liblua5.1-0-dev
 
-before_script:
-  - make astyle-check
-  - make lint-check
-
 matrix:
   include:
     - env:
-      script:
-        - make
 
     - env: TILES=1 SOUND=1 LUA=1
-      script:
+      before_script:
         - sudo apt-get install -y libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-mixer-dev
-        - make
 
     - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include" LDFLAGS="-L./WinDepend/lib"
-      script:
+      before_script:
         - sudo apt-get install -y p7zip-full
         - sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
         - 7z x cdda-win64-codeblocks.7z
-        - make
 
     - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/include/SDL2" LDFLAGS="-L./WinDepend/lib" TILES=1
-      script:
+      before_script:
         - sudo apt-get install -y p7zip-full
         - sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
         - 7z x cdda-win64-codeblocks.7z
-        - make
+
+script:
+  - make astyle-check
+  - make lint-check
+  - make

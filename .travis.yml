@@ -32,3 +32,14 @@ matrix:
     - os: osx
       env: LOCALIZE=0
       compiler: clang
+
+    - compiler: gcc
+      addons:
+        apt:
+          packages:
+            - mingw32
+            - mingw32-binutils
+            - mingw32-runtime
+
+script:
+  - make

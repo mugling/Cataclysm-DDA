@@ -3,9 +3,9 @@ sudo: required
 dist: trusty
 
 cache:
+  ccache: true
   directories:
-    - .ccache
-    - obj
+    - ./obj
 
 before_install:
   - git diff --quiet master .travis.yml

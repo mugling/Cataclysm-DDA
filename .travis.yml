@@ -15,19 +15,20 @@ language: cpp
 
 matrix:
   include:
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
+      os: linux
+      
 
-  - os: linux
-      compiler: gcc
+    - compiler: gcc
+      os: linux
       env: TILES=1
       addons:
         apt:
           packages:
             - libsdl2
 
-  - os: osx
-      compiler: clang
+    - compiler: clang
+      os: osx
 
 script:
   - make astyle-check

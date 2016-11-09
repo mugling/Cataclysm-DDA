@@ -30,6 +30,7 @@ matrix:
             - libsdl2-ttf-dev
             - libsdl2-image-dev
             - libsdl2-mixer-dev
+            - lua5.1
             - liblua5.1-0-dev
 
     - os: osx

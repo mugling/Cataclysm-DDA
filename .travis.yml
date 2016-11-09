@@ -33,13 +33,17 @@ matrix:
       env: LOCALIZE=0
       compiler: clang
 
-    - compiler: gcc
+    - env:
+        CXX: i686-w64-mingw32-g++
       addons:
         apt:
           packages:
             - mingw32
             - mingw32-binutils
             - mingw32-runtime
+      before_script:
+        - export MINGW=/opt/mingw32
+        - export PATH=$MINGW/bin:$PATH
 
 script:
   - make

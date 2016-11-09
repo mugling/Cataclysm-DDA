@@ -1,11 +1,11 @@
 language: cpp
+sudo: required
+dist: trusty
+
 cache:
   directories:
     - .ccache
     - obj
-
-sudo: required
-dist: trusty
 
 before_install:
   - git diff --quiet master .travis.yml

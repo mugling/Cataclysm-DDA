@@ -39,7 +39,7 @@ matrix:
         - 7z x cdda-win64-codeblocks.7z
         - make
 
-    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/SDL2" LDFLAGS="-L./WinDepend/lib" TILES=1
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/include/SDL2" LDFLAGS="-L./WinDepend/lib" TILES=1
       script:
         - sudo apt-get install -y p7zip-full
         - sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686

@@ -623,7 +623,7 @@ all: version $(CHECKS) $(TARGET) $(L10N) tests
 	@
 
 $(TARGET): $(ODIR) $(OBJS)
-	+$(LD) $(W32FLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
+	+$(LD) $(W32FLAGS) $(LDFLAGS) -o $(TARGET) $(OBJS)
 ifdef RELEASE
 	$(STRIP) $(TARGET)
 endif

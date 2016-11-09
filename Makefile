@@ -319,12 +319,14 @@ endif
 ifeq ($(NATIVE), win32)
 # Any reason not to use -m32 on MinGW32?
   TARGETSYSTEM=WINDOWS
+  CXXFLAGS += -DLIBINTL_STATIC
 else
   # Win64 (MinGW-w64? 64bit isn't currently working.)
   ifeq ($(NATIVE), win64)
     CXXFLAGS += -m64
     LDFLAGS += -m64
     TARGETSYSTEM=WINDOWS
+    CXXFLAGS += -DLIBINTL_STATIC
   endif
 endif
 

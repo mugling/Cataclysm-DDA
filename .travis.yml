@@ -4,6 +4,11 @@ cache: ccache
 sudo: required
 dist: trusty
 
+before_install:
+  - git diff --quiet master .travis.yml
+  - git diff --quiet master Makefile
+  - git diff --quiet master tools/format/format.pl
+
 matrix:
   include:
     - os: linux

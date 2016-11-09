@@ -30,10 +30,6 @@ matrix:
             - lua5.1
             - liblua5.1-0-dev
 
-    - os: osx
-      env: LOCALIZE=0
-      compiler: clang
-
     - env: NATIVE=win32 CROSS=i686-w64-mingw32- LOCALIZE=0
       addons:
         apt:
@@ -41,6 +37,18 @@ matrix:
             - binutils-mingw-w64-i686
             - gcc-mingw-w64-i686
             - g++-mingw-w64-i686
+
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- TILES=1 LOCALIZE=0
+      addons:
+        apt:
+          packages:
+            - binutils-mingw-w64-i686
+            - gcc-mingw-w64-i686
+            - g++-mingw-w64-i686
+
+    - os: osx
+      env: LOCALIZE=0
+      compiler: clang
 
 script:
   - make

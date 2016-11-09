@@ -29,13 +29,13 @@ matrix:
         - sudo apt-get install -y lua5.1 liblua5.1-0-dev
         - make
 
-    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include" LDFLAGS="-L./WinDepend/lib" LOCALIZE=0
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include" LDFLAGS="-L./WinDepend/lib"
         - sudo apt-get install -y p7zip-full
         - sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
         - 7z x cdda-win64-codeblocks.7z
         - make
 
-    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/SDL2" LDFLAGS="-L./WinDepend/lib" LOCALIZE=0 TILES=1
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/SDL2" LDFLAGS="-L./WinDepend/lib" TILES=1
         - sudo apt-get install -y p7zip-full
         - sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
         - 7z x cdda-win64-codeblocks.7z

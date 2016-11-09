@@ -57,9 +57,5 @@ matrix:
       before_script:
         - 7z x cdda-win64-codeblocks.7z
 
-    - os: osx
-      env: LOCALIZE=0
-      compiler: clang
-
 script:
   - make

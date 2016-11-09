@@ -30,18 +30,22 @@ matrix:
             - lua5.1
             - liblua5.1-0-dev
 
-    - env: NATIVE=win32 CROSS=i686-w64-mingw32- LOCALIZE=0
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32-
       addons:
         apt:
           packages:
+            - p7zip-full
             - binutils-mingw-w64-i686
             - gcc-mingw-w64-i686
             - g++-mingw-w64-i686
+      before_script:
+        - 7z x cdda-win64-codeblocks.7z
 
-    - env: NATIVE=win32 CROSS=i686-w64-mingw32- TILES=1 LOCALIZE=0
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- TILES=1
       addons:
         apt:
           packages:
+            - p7zip-full
             - binutils-mingw-w64-i686
             - gcc-mingw-w64-i686
             - g++-mingw-w64-i686

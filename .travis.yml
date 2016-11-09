@@ -40,8 +40,6 @@ matrix:
             - binutils-mingw-w64-i686
             - gcc-mingw-w64-i686
             - g++-mingw-w64-i686
-      before_script:
-        - export CXX=i686-w64-mingw32-g++
 
 script:
   - make

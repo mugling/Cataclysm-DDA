@@ -28,15 +28,11 @@ matrix:
 
     - env: NATIVE=win32 CROSS=i686-w64-mingw32-
       before_script:
-        - sudo apt-get install -y p7zip-full
         - sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
-        - 7z x cdda-win64-codeblocks.7z
 
     - env: NATIVE=win32 CROSS=i686-w64-mingw32- TILES=1 SOUND=1 LUA=1
       before_script:
-        - sudo apt-get install -y p7zip-full
         - sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
-        - 7z x cdda-win64-codeblocks.7z
 
 script:
   - for file in `find data/json/ -type f -regex ".*\.json$"`; do echo $file; jq '.' $file > /dev/null || exit 65; done

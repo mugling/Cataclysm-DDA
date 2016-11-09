@@ -543,10 +543,10 @@ endif
 # Global settings for Windows targets (at end)
 ifeq ($(TARGETSYSTEM),WINDOWS)
     LDFLAGS += -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lversion
-    CXXFLAGS += -IWinDepend/include
-    CXXFLAGS += -IWinDepend/include/SDL
-    CXXFLAGS += -IWinDepend/include/lua5.1
-    LDFLAGS += -LWinDepend/lib
+    CXXFLAGS += -Iwin/include
+    CXXFLAGS += -Iwin/include/SDL
+    CXXFLAGS += -Iwin/include/lua5.1
+    LDFLAGS += -Lwin/lib
 endif
 
 ifeq ($(BACKTRACE),1)

@@ -119,9 +119,9 @@ SRC_DIR = src
 LUA_DIR = lua
 LUASRC_DIR = $(SRC_DIR)/$(LUA_DIR)
 # if you have LUAJIT installed, try make LUA_BINARY=luajit for extra speed
-LUA_BINARY = lua
+LUA_BINARY ?= lua
 LOCALIZE ?= 1
-ASTYLE_BINARY = astyle
+ASTYLE_BINARY ?= astyle
 
 # tiles object directories are because gcc gets confused # Appears that the default value of $LD is unsuitable on most systems
 

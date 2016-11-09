@@ -33,7 +33,7 @@ matrix:
       env: LOCALIZE=0
       compiler: clang
 
-    - env: LOCALIZE=0
+    - env: NATIVE=win32 LOCALIZE=0
       addons:
         apt:
           packages:

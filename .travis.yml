@@ -33,15 +33,14 @@ matrix:
       env: LOCALIZE=0
       compiler: clang
 
-    - env:
-        CXX: i686-w64-mingw32-g++
-      addons:
+    - addons:
         apt:
           packages:
             - mingw32
             - mingw32-binutils
             - mingw32-runtime
       before_script:
+        --export CXX=i686-w64-mingw32-g++
         - export MINGW=/opt/mingw32
         - export PATH=$MINGW/bin:$PATH
 

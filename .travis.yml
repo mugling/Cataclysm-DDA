@@ -13,18 +13,23 @@ addons:
 
 language: cpp
 
-cache:
-  - ccache
+matrix:
+  include:
+    -os: linux
+     compiler: gcc
 
-os:
-  - linux
-  - osx
+    -os: linux
+     compiler: gcc
+     env: TILES=1
+     addons:
+       apt:
+         packages:
+           - libsdl2
 
-compiler:
-  - clang
-  - gcc
+    -os: osx
+     compiler: clang
 
 script:
   - make astyle-check
   - make lint-check
-  - make CCACHE=1 LOCALIZE=0
+  - make LOCALIZE=0

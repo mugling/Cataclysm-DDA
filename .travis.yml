@@ -1,11 +1,65 @@
 language: cpp
-compiler:
-  - gcc
+cache: ccache
 
-script: make
+sudo: required
+dist: trusty
 
-notifications:
-  irc: "irc.newnet.net#Cataclysm-DDA"
-  irc: "irc.freenode.org#Cataclysm-DDA"
-  use_notice: true
-  skip_join: true
+before_install:
+  - git diff --quiet master .travis.yml
+  - git diff --quiet master Makefile
+  - git diff --quiet master tools/format/format.pl
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          packages:
+            - libjson-perl
+            - astyle
+      before_script:
+        - make astyle-check
+        - make lint-check
+
+    - os: linux
+      env: TILES=1 SOUND=1 LUA=1
+      compiler: gcc
+      addons:
+        apt:
+          packages:
+            - libsdl2-dev
+            - libsdl2-ttf-dev
+            - libsdl2-image-dev
+            - libsdl2-mixer-dev
+            - lua5.1
+            - liblua5.1-0-dev
+
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include" LDFLAGS="-L./WinDepend/lib" LOCALIZE=0
+      addons:
+        apt:
+          packages:
+            - p7zip-full
+            - binutils-mingw-w64-i686
+            - gcc-mingw-w64-i686
+            - g++-mingw-w64-i686
+      before_script:
+        - 7z x cdda-win64-codeblocks.7z
+
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/include/SDL2" LDFLAGS="-L./WinDepend/lib" LOCALIZE=0 TILES=1
+      addons:
+        apt:
+          packages:
+            - p7zip-full
+            - binutils-mingw-w64-i686
+            - gcc-mingw-w64-i686
+            - g++-mingw-w64-i686
+      before_script:
+        - 7z x cdda-win64-codeblocks.7z
+
+    - os: osx
+      env: LOCALIZE=0
+      compiler: clang
+
+script:
+  - make

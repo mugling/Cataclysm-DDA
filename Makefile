@@ -119,9 +119,9 @@ SRC_DIR = src
 LUA_DIR = lua
 LUASRC_DIR = $(SRC_DIR)/$(LUA_DIR)
 # if you have LUAJIT installed, try make LUA_BINARY=luajit for extra speed
-LUA_BINARY = lua
-LOCALIZE = 1
-ASTYLE_BINARY = astyle
+LUA_BINARY ?= lua
+LOCALIZE ?= 1
+ASTYLE_BINARY ?= astyle
 
 # tiles object directories are because gcc gets confused # Appears that the default value of $LD is unsuitable on most systems
 
@@ -319,12 +319,14 @@ endif
 ifeq ($(NATIVE), win32)
 # Any reason not to use -m32 on MinGW32?
   TARGETSYSTEM=WINDOWS
+  CXXFLAGS += -DLIBINTL_STATIC
 else
   # Win64 (MinGW-w64? 64bit isn't currently working.)
   ifeq ($(NATIVE), win64)
     CXXFLAGS += -m64
     LDFLAGS += -m64
     TARGETSYSTEM=WINDOWS
+    CXXFLAGS += -DLIBINTL_STATIC
   endif
 endif
 

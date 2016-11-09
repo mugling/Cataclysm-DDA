@@ -30,7 +30,7 @@ matrix:
             - lua5.1
             - liblua5.1-0-dev
 
-    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include"
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include" LDFLAGS="-L./WinDepend/lib"
       addons:
         apt:
           packages:
@@ -41,7 +41,7 @@ matrix:
       before_script:
         - 7z x cdda-win64-codeblocks.7z
 
-    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/include/SDL2" TILES=1
+    - env: NATIVE=win32 CROSS=i686-w64-mingw32- CXXFLAGS="-I./WinDepend/include -I./WinDepend/include/SDL2" LDFLAGS="-L./WinDepend/lib" TILES=1
       addons:
         apt:
           packages:

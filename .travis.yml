@@ -17,7 +17,6 @@ matrix:
   include:
     -os: linux
      compiler: gcc
-
     -os: linux
      compiler: gcc
      env: TILES=1
@@ -25,7 +24,6 @@ matrix:
        apt:
          packages:
            - libsdl2
-
     -os: osx
      compiler: clang
 

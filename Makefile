@@ -356,7 +356,7 @@ ifeq ($(TARGETSYSTEM),WINDOWS)
     LDFLAGS += -static
   endif
   ifeq ($(LOCALIZE), 1)
-    LDFLAGS += -lintl -liconv
+    W32FLAGS += -lintl -liconv
   endif
   W32FLAGS += -Wl,-stack,12000000,-subsystem,windows
   RFLAGS = -J rc -O coff
@@ -623,7 +623,7 @@ all: version $(CHECKS) $(TARGET) $(L10N) tests
 	@
 
 $(TARGET): $(ODIR) $(OBJS)
-	+$(LD) $(W32FLAGS) $(LDFLAGS) -o $(TARGET) $(OBJS)
+	+$(LD) $(W32FLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
 ifdef RELEASE
 	$(STRIP) $(TARGET)
 endif

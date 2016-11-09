@@ -13,6 +13,9 @@ addons:
 
 language: cpp
 
+cache:
+  - ccache
+
 os:
   - linux
   - osx
@@ -24,4 +27,4 @@ compiler:
 script:
   - make astyle-check
   - make lint-check
-  - make
+  - make CCACHE=1 LOCALIZE=0

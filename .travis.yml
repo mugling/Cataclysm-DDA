@@ -21,7 +21,7 @@ matrix:
         - make lint-check
 
     - os: linux
-      env: TILES=1 SOUND=1 LUA=1 LUA_BINARY=lua-5.1
+      env: TILES=1 SOUND=1 LUA=1 LUA_BINARY=lua51
       compiler: gcc
       addons:
         apt:

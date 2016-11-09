@@ -13,9 +13,9 @@ matrix:
       compiler: gcc
       addons:
         apt:
-        packages:
-          - libjson-perl
-          - astyle
+          packages:
+            - libjson-perl
+            - astyle
       before_script:
         - make astyle-check
         - make lint-check

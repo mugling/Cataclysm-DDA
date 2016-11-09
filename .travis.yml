@@ -51,8 +51,6 @@ matrix:
             - g++-mingw-w64-i686
       before_script:
         - 7z x cdda-win64-codeblocks.7z
-      script:
-          make -DLIBINTL_STATIC=1
 
     - os: osx
       env: LOCALIZE=0

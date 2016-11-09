@@ -16,6 +16,7 @@ install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libjson-perl astyle
   - sudo apt-get install -y lua5.1 liblua5.1-0-dev
+  - sudo apt-get install -y jq
 
 matrix:
   include:
@@ -38,6 +39,7 @@ matrix:
         - 7z x cdda-win64-codeblocks.7z
 
 script:
+  - for file in `find data/json/ -type f -regex ".*\.json$"`; do echo $file; jq '.' $file > /dev/null || exit 65; done
   - make astyle-check
   - make lint-check
   - make

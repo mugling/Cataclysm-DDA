@@ -5,34 +5,32 @@ branches:
 sudo: required
 dist: trusty
 
-addons:
-  apt:
-    packages:
-      - libjson-perl
-      - astyle
-
 language: cpp
 
 matrix:
   include:
-    - compiler: gcc
-      os: linux
-      
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+        packages:
+          - libjson-perl
+          - astyle
+        before_script:
+          - make astyle-check
+          - make lint-check
 
-    - compiler: gcc
-      os: linux
+    - os: linux
       env: TILES=1
+      compiler: gcc
       addons:
         apt:
           packages:
             - libsdl2-2.0
-      script:
-        - make
 
-    - compiler: clang
-      os: osx
+    - os: osx
+      env: LOCALIZE=0
+      compiler: clang
 
 script:
-  - make astyle-check
-  - make lint-check
-  - make LOCALIZE=0
+  - make RELEASE=1

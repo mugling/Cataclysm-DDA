@@ -26,6 +26,8 @@ matrix:
         apt:
           packages:
             - libsdl2-2.0
+      script:
+        - make
 
     - compiler: clang
       os: osx

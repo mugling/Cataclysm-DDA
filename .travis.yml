@@ -16,9 +16,9 @@ matrix:
         packages:
           - libjson-perl
           - astyle
-        before_script:
-          - make astyle-check
-          - make lint-check
+      before_script:
+        - make astyle-check
+        - make lint-check
 
     - os: linux
       env: TILES=1

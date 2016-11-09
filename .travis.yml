@@ -36,14 +36,11 @@ matrix:
     - addons:
         apt:
           packages:
-            - mingw32
-            - mingw32-binutils
-            - mingw32-runtime
+            - binutils-mingw-w64-i686
+            - gcc-mingw-w64-i686
+            - g++-mingw-w64-i686
       before_script:
         - export CXX=i686-w64-mingw32-g++
-        - export LD=i686-w64-mingw32.static-g+
-        - export MINGW=/opt/mingw32
-        - export PATH=$MINGW/bin:$PATH
 
 script:
   - make

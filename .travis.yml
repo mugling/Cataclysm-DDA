@@ -33,7 +33,7 @@ matrix:
     - env:
       - NATIVE: win32
         CROSS: i686-w64-mingw32-
-        CXXFLAGS: -I./WinDepend/include -I./WinDepend/include/SDL2
+        CXXFLAGS: "-I./WinDepend/include"
       addons:
         apt:
           packages:
@@ -46,9 +46,9 @@ matrix:
 
     - env:
       - NATIVE: win32
-        TILES: 1
         CROSS: i686-w64-mingw32-
-        CXXFLAGS: -I./WinDepend/include -I./WinDepend/include/SDL2
+        CXXFLAGS: "-I./WinDepend/include -I./WinDepend/include/SDL2"
+        TILES: 1
       addons:
         apt:
           packages:

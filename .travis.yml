@@ -1,11 +1,7 @@
-branches:
-  only:
-    - master
+language: cpp
 
 sudo: required
 dist: trusty
-
-language: cpp
 
 matrix:
   include:
@@ -36,6 +32,3 @@ matrix:
     - os: osx
       env: LOCALIZE=0
       compiler: clang
-
-script:
-  - make

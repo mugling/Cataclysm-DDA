@@ -349,14 +349,9 @@ ifeq ($(TARGETSYSTEM),WINDOWS)
   BINDIST = $(W32BINDIST)
   BINDIST_CMD = $(W32BINDIST_CMD)
   ODIR = $(W32ODIR)
-  ifdef DYNAMIC_LINKING
-    # Windows isn't sold with programming support, these are static to remove MinGW dependency.
-    LDFLAGS += -static-libgcc -static-libstdc++
-  else
-    LDFLAGS += -static
-  endif
+  LDFLAGS += -static-libgcc -static-libstdc++
   ifeq ($(LOCALIZE), 1)
-    W32FLAGS += -lintl -liconv
+    LDFLAGS += -lintl -liconv
   endif
   W32FLAGS += -Wl,-stack,12000000,-subsystem,windows
   RFLAGS = -J rc -O coff

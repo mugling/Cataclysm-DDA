@@ -33,7 +33,8 @@ matrix:
       env: LOCALIZE=0
       compiler: clang
 
-    - addons:
+    - env: LOCALIZE=0
+      addons:
         apt:
           packages:
             - binutils-mingw-w64-i686

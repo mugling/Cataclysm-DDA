@@ -410,12 +410,25 @@ bool map::vehact( vehicle &veh )
         veh.falling = false;
     }
 
+    const float wheel_traction_area = vehicle_wheel_traction( veh );
+    const float traction = veh.k_traction( wheel_traction_area );
+
+    // Note: ugly hack, copied from vehicle::thrust
+    // Needed because otherwise vehicles don't slow down when they lose traction
+    // and because vehicle::max_velocity is in different units from vehicle::velocity
+    // @todo Remove as soon as it isn't required
+    double max_vel_pre_convert = std::accumulate( veh.parts.begin(), veh.parts.end(), 0.0f,
+    [&]( const double lhs, const vehicle_part &rhs ) {
+        return std::max( lhs, veh.max_velocity( rhs ) );
+    } );
+    int max_vel = max_vel_pre_convert * 2.237 * 100 * traction;
+
     double slowdown = 0.0;
     if( should_fall ) {
         // air resistance
         slowdown = 2.0;
 
-    } else if( !veh.engine_on ) {
+    } else if( !veh.engine_on || veh.skidding || max_vel < veh.velocity ) {
         // if we don't have an active engine providing thrust then reduce velocity from friction
         double k = 0.5 * veh.total_mass() * pow( veh.current_velocity(), 2 );
         k -= k * friction_loss / veh.k_dynamics();
@@ -447,8 +460,6 @@ bool map::vehact( vehicle &veh )
         return true;
     }
 
-    const float wheel_traction_area = vehicle_wheel_traction( veh );
-    const float traction = veh.k_traction( wheel_traction_area );
     // TODO: Remove this hack, have vehicle sink a z-level
     if( wheel_traction_area < 0 ) {
         add_msg(m_bad, _("Your %s sank."), veh.name.c_str());
